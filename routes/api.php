@@ -5,8 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrganizerController;
 use App\Http\Controllers\Api\RolePermissionController;
-
+use App\Http\Controllers\Api\TournamentController;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Api\Teamcontroller;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,13 +24,23 @@ Route::post('/permission/create', [RolePermissionController::class,'permissionCr
 Route::post('role-permission', [RolePermissionController::class,'assignRolePermission'])->name('role.permission.assign');
 Route::post('role-permission-revoke', [RolePermissionController::class,'revokeRolePermission'])->name('role.permission.revoke');
 Route::post('role-permission-update', [RolePermissionController::class,'updateRolePermission'])->name('role.permission.update');
+Route::post('user-role-permission', [RolePermissionController::class,'assignRoleToUser'])->name('user.role');
+Route::post('user-role-revoke', [RolePermissionController::class,'revokeRole'])->name('user.role.revoke');
 
 
 //Tournamnet api
-Route::post('tournaments/create', [OrganizerController::class,'create'])->name('tournament.create');
-Route::get('tournaments', [OrganizerController::class,'index'])->name('tournament.index');
-Route::get('tournaments/{id}', [OrganizerController::class,'show'])->name('tournament.show');
-Route::put('tournaments/{id}', [OrganizerController::class,'update'])->name('tournament.update');
-Route::delete('tournaments/{id}', [OrganizerController::class,'destroy'])->name('tournament.destroy');
-Route::get('tournaments/{id}/matches', [OrganizerController::class,'matches'])->name('tournament.matches');
+Route::post('tournaments/create', [TournamentController::class,'create'])->name('tournament.create');
+Route::get('tournaments', [TournamentController::class,'index'])->name('tournament.index');
+Route::get('tournaments/{id}', [TournamentController::class,'show'])->name('tournament.show');
+Route::put('tournaments/{id}', [TournamentController::class,'update'])->name('tournament.update');
+Route::delete('tournaments/{id}', [TournamentController::class,'destroy'])->name('tournament.destroy');
+Route::get('tournaments/{id}/matches', [TournamentController::class,'matches'])->name('tournament.matches');
+Route::post('tournament/team/create',[TournamentController::class,'registerTeam'])->name('register.team');
 
+//Team api
+Route::post('teams/create', [TeamController::class,'create'])->name('team.create');
+Route::get('teams', [TeamController::class,'index'])->name('team.index');
+Route::get('teams/{id}', [TeamController::class,'show'])->name('team.show');
+Route::put('teams/{id}', [TeamController::class,'update'])->name('team.update');
+Route::delete('teams/{id}', [TeamController::class,'destroy'])->name('team.destroy');
+Route::get('teams/{id}/players', [TeamController::class,'players'])->name('team.players');

@@ -27,7 +27,7 @@ class LoginRequest extends FormRequest
         log::info(1111);
         return [
             'email' => 'email|required',
-            'password' => 'required|confirmed',
+            'password' => 'required',
         ];
     }
 

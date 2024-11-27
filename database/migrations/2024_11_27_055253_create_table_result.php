@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('result', function (Blueprint $table) {
             $table->id();
+            $table->string('home_team_score');
+            $table->string('opponent_team_score');
+            $table->unsignedBigInteger('winner_id');
             $table->timestamps();
         });
     }

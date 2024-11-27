@@ -1,0 +1,3 @@
+<div>
+    {{$data['password']}}
+</div>

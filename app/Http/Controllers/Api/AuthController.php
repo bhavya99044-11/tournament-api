@@ -18,7 +18,6 @@ class AuthController extends Controller
         // Attempt to authenticate the user
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $token = Auth::user()->createToken('authToken')->accessToken;
-
             return response()->json(['token' => $token],200);
         }else{
             // Return an error response if the authentication fails

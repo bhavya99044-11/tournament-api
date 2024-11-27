@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('matches', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('team_id');
+            $table->unsignedBigInteger('home_team_id');
             $table->unsignedBigInteger('opponent_team_id');
             $table->unsignedBigInteger('tournament_id');
             $table->unsignedBigInteger('result_id')->nullable();
@@ -21,9 +21,12 @@ return new class extends Migration
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->integer('round');
+            $table->string('status');
             $table->timestamps();
         });
     }
+
+
 
     /**
      * Reverse the migrations.
