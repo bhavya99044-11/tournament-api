@@ -11,8 +11,14 @@ export default {
     ],
     theme: {
         extend: {
+            colors:{
+                'primary':'blue'
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                'display':['Poppins','sans-serif'],
+                'body':['Figtree', ...defaultTheme.fontFamily.sans],
+                roboto:['Roboto', ...defaultTheme.fontFamily.sans]
             },
         },
     },
