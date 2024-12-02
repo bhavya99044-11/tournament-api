@@ -24,9 +24,8 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
-        log::info(1111);
         return [
-            'email' => 'email|required',
+            'email' => 'required|email',
             'password' => 'required',
         ];
     }
@@ -38,6 +37,6 @@ class LoginRequest extends FormRequest
             'message' => 'Validation errors',
             'data' => $validator->errors()
 
-        ], 401));
+        ], 400));
     }
 }

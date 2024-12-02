@@ -10,18 +10,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Passport;
-
+use Illuminate\Support\Facades\Log;
 class AuthController extends Controller
 {
     public function login(LoginRequest $request){
-
         // Attempt to authenticate the user
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            $token = Auth::user()->createToken('authToken')->accessToken;
-            return response()->json(['token' => $token],200);
-        }else{
-            // Return an error response if the authentication fails
-            return response()->json(['error' => 'Invalid credentials'], 401);
+        try{
+            $auth=Auth::attempt(['email' => $request->email, 'password' => $request->password]);
+            if($auth){
+                return response()->json(['logged in'],200);
+            }
+           return response()->json(['error' =>'Invalid credentials'],401);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

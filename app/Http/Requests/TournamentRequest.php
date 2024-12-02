@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class TournamentRequest extends FormRequest
 {
@@ -25,16 +25,15 @@ class TournamentRequest extends FormRequest
      */
     public function rules(Request $request): array
     {
-        $maxValue=(int)$request->input('max_teams');
+        // $maxValue=(int)$request->input('max_teams');
 
         return [
             'name' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'location' => 'required',
-            'organizer_id' => 'required|exists:users,id',
             'max_teams' => 'required|min:2|integer',
-            'min_teams' =>['required','lt:max_teams'],
+            'min_teams' => ['required', 'lt:max_teams'],
             'tournament_type' => 'required|in:teams,players',
         ];
     }
@@ -48,4 +47,8 @@ class TournamentRequest extends FormRequest
         ], 401));
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['organizar_id' => Auth::user()->id]);
+    }
 }

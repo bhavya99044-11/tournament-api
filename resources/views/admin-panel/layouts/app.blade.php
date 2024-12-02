@@ -1,55 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard - Admin One Tailwind CSS Admin Dashboard</title>
-
-    <!-- Tailwind is included -->
-    <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
-
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"/>
-    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#00b4b6"/>
-
-    <meta name="description" content="Admin One - free Tailwind dashboard">
-
-    <meta property="og:url" content="https://justboil.github.io/admin-one-tailwind/">
-    <meta property="og:site_name" content="JustBoil.me">
-    <meta property="og:title" content="Admin One HTML">
-    <meta property="og:description" content="Admin One - free Tailwind dashboard">
-    <meta property="og:image" content="https://justboil.me/images/one-tailwind/repository-preview-hi-res.png">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="1920">
-    <meta property="og:image:height" content="960">
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="Admin One HTML">
-    <meta property="twitter:description" content="Admin One - free Tailwind dashboard">
-    <meta property="twitter:image:src" content="https://justboil.me/images/one-tailwind/repository-preview-hi-res.png">
-    <meta property="twitter:image:width" content="1920">
-    <meta property="twitter:image:height" content="960">
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script href="https://cdn.datatables.net/fixedcolumns/5.0.4/js/dataTables.fixedColumns.js"></script>
+<script href="https://cdn.datatables.net/fixedcolumns/5.0.4/js/fixedColumns.dataTables.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    @vite('resources/css/app.css')
+</head>
 
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130795909-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-130795909-1');
-    </script>
+<body class="font-display">
+        @include('admin-panel.layouts.sidebar')
+        @include('admin-panel.layouts.header')
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    @yield('content')
 <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '658339141622648');
-    fbq('track', 'PageView');
-  </script>
-  </head>
+document.getElementById('menu-toggle').addEventListener('click', function() {
+  const sidebar = document.querySelector('aside');
+  const mainContent = document.querySelector('.ml-64');
+
+  sidebar.classList.toggle('-translate-x-full');
+  mainContent.classList.toggle('ml-0');
+  mainContent.classList.toggle('ml-64');
+});
+
+        </script>
+</body>
+
+@stack('scripts')
+
+</html>
