@@ -5,6 +5,7 @@ use App\Http\Middleware\WebAuthMiddleware;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
 Use App\Http\Controllers\TournamentController;
+Use App\Http\Controllers\TeamController;
 
 
 //admin routes login logout
@@ -12,9 +13,7 @@ Route::get('/admin/login', function () {
     return view('admin-panel.login');
 })->name('admin.login');
 Route::group(['middleware'=>WebAuthMiddleware::class,['role:admin|super admin']],function(){
-    Route::get('/admin/dashboard',    function(){
-        return view('admin-panel.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard',[DashboardController::class,'dashboard'])->name('admin.dashboard');
 });
 Route::post('/admin/login', [AuthController::class,'login'])->name('admin.login');
 Route::get('token/{name}',[DashboardController::class,'token'])->name('token')->middleware([WebAuthMiddleware::class]);
@@ -34,3 +33,12 @@ Route::get('/tournament/{id}/edit', [TournamentController::class,'edit'])->name(
 Route::put('/tournament/{id}/update', [TournamentController::class,'update'])->name('tournament.update');
 Route::delete('/tournament/{id}/delete', [TournamentController::class,'destroy'])->name('tournament.destroy');
 Route::get('/tournament/{id}', [TournamentController::class,'show'])->name('tournament.show');
+
+
+//Team and playes registration routes
+Route::get('/tournament/{id}/team/create', [TournamentController::class,'createTeamForm'])->name('team.create');
+Route::get('/player/create/{id}', [TournamentController::class,'createPlayerForm'])->name('player.create');
+Route::post('/team/register', [TournamentController::class,'registerTeam'])->name('team.register');
+Route::post('/player/register', [TournamentController::class,'registerPlayer'])->name('player.register');
+
+Route::get('/player/positions',[TeamController::class,'getPlayerPositions'])->name('getPlayerPositions');

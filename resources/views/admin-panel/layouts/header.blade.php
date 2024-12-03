@@ -1,6 +1,6 @@
-<div class="flex-1 ml-64">
+<div class="flex-1 ">
     <!-- Header -->
-    <header class="bg-white shadow-md">
+    <header class="bg-white shadow-md w-full h-1/8">
       <div class="flex items-center justify-between p-4">
         <div class="flex items-center space-x-4">
           <button id="menu-toggle" class="text-gray-600 hover:text-gray-800">

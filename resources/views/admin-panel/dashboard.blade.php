@@ -3,12 +3,12 @@
     <main class="p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Card 1 -->
-            <a href="#">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <a href="{{route('tournament.filter',['id'=>1])}}">
+                <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500">Old Tournaments</p>
-                        <h3 class="text-2xl font-bold">100</h3>
+                        <h3 class="text-2xl font-bold">{{$data['tournaments']['completed_tournament']}}</h3>
                         <p class="text-green-500 text-sm">Lets see</p>
                     </div>
                     <div class="bg-indigo-100 p-3 rounded-full">
@@ -18,12 +18,12 @@
             </div>
         </a>
             <!-- Card 2 -->
-            <a href="#">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <a href="{{route('tournament.filter',['id'=>0])}}">
+                <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500">Upcoming Tournaments</p>
-                        <h3 class="text-2xl font-bold">2</h3>
+                        <h3 class="text-2xl font-bold">{{$data['tournaments']['upcoming_tournament']}}</h3>
                         <p class="text-green-500 text-sm">Check here</p>
                     </div>
                     <div class="bg-green-100 p-3 rounded-full">
@@ -34,12 +34,12 @@
         </a>
 
             <!-- Card 3 -->
-            <a href="#">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <a href="{{route('tournament.filter',['id'=>2])}}">
+                <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500">Live Tournaments</p>
-                        <h3 class="text-2xl font-bold">14</h3>
+                        <h3 class="text-2xl font-bold">{{$data['tournaments']['live_tournament']}}</h3>
                         <p class="text-red-500 text-sm">-Check here</p>
                     </div>
                     <div class="bg-purple-100 p-3 rounded-full">
@@ -50,12 +50,12 @@
         </a>
 
             <!-- Card 4 -->
-            <a href="#">
+            <a href="{{route('tournament.filter',['id'=>3])}}">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500">Cancelled Tournaments</p>
-                        <h3 class="text-2xl font-bold">0</h3>
+                        <h3 class="text-2xl font-bold">{{$data['tournaments']['canceled_tournament']}}</h3>
                         <p class="text-green-500 text-sm">check here</p>
                     </div>
                     <div class="bg-yellow-100 p-3 rounded-full">

@@ -21,11 +21,14 @@
 </head>
 
 <body class="font-display">
+    <div class="flex h-screen">
         @include('admin-panel.layouts.sidebar')
         @include('admin-panel.layouts.header')
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     @yield('content')
+    </div>  
+</div>
 <script>
 document.getElementById('menu-toggle').addEventListener('click', function() {
   const sidebar = document.querySelector('aside');

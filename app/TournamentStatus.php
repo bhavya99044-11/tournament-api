@@ -2,15 +2,15 @@
 
 namespace App;
 
-enum TournamentStatus:string
+enum TournamentStatus:Int
 {
-    case Pending = 'pending';
+    case Completed = 1;
 
-    case Active = 'active';
+    case Upcoming  = 0;
 
-    case Inactive = 'inactive';
+    case Live = 2;
 
-    case Rejected = 'rejected';
+    case Canceled = 3;
 
 }
 
