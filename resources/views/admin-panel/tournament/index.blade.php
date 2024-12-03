@@ -18,6 +18,8 @@
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -94,6 +96,7 @@
                     data: 'current_teams',
                     name: 'current_teams'
                 },
+
                 {
                     data: 'start_date',
                     name: 'start_date'
@@ -101,33 +104,41 @@
                 {
                     data: 'end_date',
                     name: 'end_date'
-                }
+                },
+                {
+                    data:'action',
+                    name: 'action',
+                },
             ],
-            columnDefs: [
-                { className: "dt-head-center dt-center", targets: '_all' },
-        {
-            targets: 2,
-            render:function(data){
-                if(data=='Completed'){
-                    return `<div class="bg-green-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
-                }else if(data=='Cancelled'){
-                    return `<div class="bg-red-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
-                }else{
-                    return `<div class="bg-blue-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
+            columnDefs: [{
+                    className: "dt-head-center dt-center",
+                    targets: '_all'
+                },
+                {
+                    targets: 2,
+                    render: function(data) {
+                        if (data == 'Completed') {
+                            return `<div class="bg-green-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
+                        } else if (data == 'Cancelled') {
+                            return `<div class="bg-red-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
+                        } else {
+                            return `<div class="bg-blue-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
+                        }
+                    }
                 }
-            }
-        }
-    ]
+            ]
         })
 
+        $(document).on('click','.edit-data',function(){
+            let id=$(this).data('id');
+            let parent=$(this).parent();
+            let html=`
+            <div class="edit-show absolute right-1 text-gray-500 p-1 font-semibold  bg-white border-2 border-opacity-50 rounded-lg text-center justify-center  border-gray-400 shadow-md flex flex-col space-y-1">
+                    <button class="delete-data" data-id=`${id}`>Edit</button>
+                    <button class="view-data" data-id=`${id}`>Delete</button>
+                </div>`;
+        })
 
-        // table.row( $(this) ).invalidate().draw();
-        //             var cc = $('#tournamentTable').dataTable();
-
-        // console.log(cc)
-
-
-        // new DataTable('#tournamentTable');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

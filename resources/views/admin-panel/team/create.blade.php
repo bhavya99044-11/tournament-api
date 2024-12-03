@@ -6,16 +6,20 @@
             <!-- Team Registration Form -->
             <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">Team Registration</h2>
-                <form id="teamForm" data-team-id="{{ $data['team_id'] }}" class=" grid grid-cols-2">
+                <form id="teamForm"  class=" grid grid-cols-2">
                     <div>
+                        <input type="hidden"
+                        value="{{$data['tournament_id']}}"
+                        name="tournament_id"
+                        required class="form-input" placeholder="Enter team name">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
                         <input type="text"
-                            class="outline-1 placeholder:text-gray-400  outline-cyan-200 border-2 p-2 mt-1" name="teamName"
+                            class="outline-1 placeholder:text-gray-400  outline-cyan-200 border-2 p-2 mt-1" name="name"
                             required class="form-input" placeholder="Enter team name">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Team Email</label>
-                        <input type="email" class="outline-1 outline-cyan-200 border-2 p-2 mt-1" name="teamEmail"
+                        <input type="email" class="outline-1 outline-cyan-200 border-2 p-2 mt-1" name="email"
                             class="mt-1" required class="form-input" placeholder="Enter team email">
                     </div>
                 </form>
