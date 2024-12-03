@@ -11,6 +11,7 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Teams
                     </th>
                     <th name="current_teams"
@@ -73,57 +74,52 @@
             // });
 
         });
-        const table =
-            $(document).ready(function() {
-                $.ajax({
-                    'url': '{{ route('tournament.index') }}',
-                    'method': "GET",
-                    'contentType': 'application/json'
-                }).done(function(response) {
-                    console.log(response.data);
-                    $('#tournamentTable').dataTable({
-                        "columnDefs": [{
-                                targets:[0,1,2,3,4],
-                                orderable: true,
-                                render: function(data) {
-                                    return `
-                                <div class="text-center" value="${data}">${data}</div>
-                            `;
-                                }
-                            },
-                            {
-                                "className": "dt-head-center dt-center",
-                                "targets": "_all"
-                            },
-                            {
-                                "className": "text-center",
-                                "targets": [0]
-                            }
-                        ],
-                        order: [
-                            [1, 'asc']
-                        ],
-                        "aaData": response.data,
-                        "columns": [{
-                                "data": "id"
-                            },
-                            {
-                                "data": "name"
-                            },
-                            {
-                                "data": "current_teams"
-                            },
-                            {
-                                "data": "start_date"
-                            },
-                            {
-                                "data": "end_date"
-                            },
+        const table = $('#tournamentTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('tournament.index') }}",
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
+                },
+                {
+                    data: 'current_teams',
+                    name: 'current_teams'
+                },
+                {
+                    data: 'start_date',
+                    name: 'start_date'
+                },
+                {
+                    data: 'end_date',
+                    name: 'end_date'
+                }
+            ],
+            columnDefs: [
+                { className: "dt-head-center dt-center", targets: '_all' },
+        {
+            targets: 2,
+            render:function(data){
+                if(data=='Completed'){
+                    return `<div class="bg-green-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
+                }else if(data=='Cancelled'){
+                    return `<div class="bg-red-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
+                }else{
+                    return `<div class="bg-blue-500 text-center rounded-full py-2 text-white font-semibold ">${data}</div>`;
+                }
+            }
+        }
+    ]
+        })
 
-                        ]
-                    })
-                })
-            });
 
         // table.row( $(this) ).invalidate().draw();
         //             var cc = $('#tournamentTable').dataTable();

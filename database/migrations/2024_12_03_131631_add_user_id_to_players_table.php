@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tournaments', function (Blueprint $table) {
-            $table->string('status')->default('0');
+        Schema::table('players', function (Blueprint $table) {
+
+            $table->foreignId('user_id')->after('id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tournaments', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('players', function (Blueprint $table) {
+            $table->dropForeign('players_user_id_foreign');
+            $table->dropColumn('user_id');
         });
     }
 };

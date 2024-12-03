@@ -1,4 +1,4 @@
-<aside class="bg-indigo-800 text-white w-64 flex flex-col fixed h-full">
+<aside class="bg-indigo-800 text-white w-1/6 flex flex-col  h-full">
     <div class="p-4">
       <h2 class="text-2xl font-bold">Admin Panel</h2>
     </div>
@@ -31,3 +31,4 @@
       </ul>
     </nav>
   </aside>
+  {{-- php artisan make:migration add_player_position_to_players_table --}}

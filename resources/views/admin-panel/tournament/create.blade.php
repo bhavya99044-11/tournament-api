@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         allowInput: true,
         minDate: "today",
     });
-
     $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
