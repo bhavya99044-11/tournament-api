@@ -10,7 +10,7 @@ class Player extends Model
 
     protected $fillable=[
         'user_id',
-        'player_position',
+        'player_position'
     ];
 
     public function user(){

@@ -1,6 +1,10 @@
 @extends('admin-panel.layouts.app')
 <meta name="csrf_token" content="{{ csrf_token() }}">
-
+<style>
+    tbody>tr {
+        background-color: red;
+    }
+</style>
 @section('content')
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
 
@@ -23,26 +27,7 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                <tr>
-                    {{-- <td class="px-6 py-4 whitespace-nowrap">Summer Championship</td>
-                <td class="px-6 py-4 whitespace-nowrap">New York</td>
-                <td class="px-6 py-4 whitespace-nowrap">8/12</td>
-                <td class="px-6 py-4 whitespace-nowrap">Jun 1 - Jun 15</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Active
-                    </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button class="text-blue-600 hover:text-blue-900 mr-3">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="text-red-600 hover:text-red-900">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr> --}}
-                </tr>
+
             </tbody>
         </table>
     </div>
@@ -56,6 +41,7 @@
 
 @push('scripts')
     <script>
+        //New Tournament Form Modal
         document.addEventListener("DOMContentLoaded", (event) => {
             let form = document.getElementById("tournamentForm");
             const newTournamentBtn = document.querySelector('.new-tournament');
@@ -69,13 +55,9 @@
                 form.reset();
                 modal.classList.add('hidden');
             });
-            // modal.addEventListener('click', (e) => {
-            //     if (e.target === modal) {
-            //         modal.classList.add('hidden');
-            //     }
-            // });
-
         });
+
+        //Tournament Datatble
         const table = $('#tournamentTable').DataTable({
             processing: true,
             serverSide: true,
@@ -106,7 +88,7 @@
                     name: 'end_date'
                 },
                 {
-                    data:'action',
+                    data: 'action',
                     name: 'action',
                 },
             ],
@@ -126,24 +108,51 @@
                         }
                     }
                 }
-            ]
+            ],
+            createdRow: function(row, data, dataIndex) {
+                $(row).hover(function() {
+                    $(this).css('background-color', 'gray');
+                }, function() {
+                    $(this).css('background-color', '');
+                });
+                $(row).addClass('tournament-view');
+                $(row).attr('data-id', data.id)
+                $(row).css('cursor', 'pointer');
+            }
         })
 
-        $(document).on('click','.edit-data',function(){
-            let id=$(this).data('id');
-            let parent=$(this).parent();
-            let html=`
-            <div class="edit-show absolute right-1 text-gray-500 p-1 font-semibold  bg-white border-2 border-opacity-50 rounded-lg text-center justify-center  border-gray-400 shadow-md flex flex-col space-y-1">
-                    <button class="delete-data" data-id=`${id}`>Edit</button>
-                    <button class="view-data" data-id=`${id}`>Delete</button>
+        $(document).on('click', '.tournament-view', function(e) {
+           if(e.target.classList.contains('fas')){
+
+           }else{
+            let id =$(this).attr('data-id');
+            let url='{{route('tournament.teams',":id")}}';
+            url = url.replace(':id', id);
+            window.location.href=url;
+           }
+        })
+
+        //On edit to show edit delete popup
+        $(document).on('click', '.edit-data', function() {
+            let id = $(this).data('id');
+            let sibling = $(this).siblings('.edit-show');
+            if (sibling.length) {
+                sibling.remove();
+                return;
+            } else {
+                let parent = $(this).parent();
+                let html = `<div class="edit-show absolute right-1 text-gray-500 p-1 font-semibold  bg-white border-2 border-opacity-50 rounded-lg text-center justify-center  border-gray-400 shadow-md flex flex-col space-y-1">\
+                    <button class="delete-data" data-id=${id}>Edit</button>\
+                    <button class="view-data" data-id=${id}>Delete</button>\
                 </div>`;
+                parent.append(html);
+            }
         })
-
+        //ajax header
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    </script>
     </script>
 @endpush

@@ -54,11 +54,6 @@
         // State management
         $(document).ready(function() {
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
-                }
-            });
 
             let players = [];
             let playerIdCounter = 1;
@@ -145,36 +140,13 @@
                         team: teamData,
                         playerData: playerData
                     },
-                    // contentType: false,
-                    // processData: false,
                     success: function(response) {
-                        alert(response.message);
+                       window.location.reload();
                     }
                 });
             });
 
         });
 
-        //ajax request to register team amd players
-        //   $(document).ready(function() {
-        //     $('#teamForm').on('submit', function(e) {
-
-        //     //   let formData = {
-        //     //     team: teamData,
-        //     //     players: playerData
-        //     //   };
-        //     //   $.ajax({
-        //     //     url: '{{}}',
-        //     //     type: 'POST',
-        //     //     data: formData,
-        //     //     success: function(response) {
-        //     //       alert(response.message);
-        //     //     },
-        //     //     error: function(xhr, status, error) {
-        //     //       alert(xhr.responseText);
-        //     //     }
-        //     //   });
-        //     });
-        //   });
     </script>
 @endpush

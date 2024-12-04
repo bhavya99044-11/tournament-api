@@ -16,14 +16,11 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Player;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
+use Carbon\Carbon;
 class TournamentController extends Controller
 {
     public $data;
-    public function __construct()
-    {
-
-    }
+    public function __construct() {}
     public function index(Request $request)
     {
         $tournamentStatus = TournamentStatus::cases();
@@ -42,21 +39,18 @@ class TournamentController extends Controller
                     }
                     return $status;
                 })
-                ->addColumn('action',function ($row) use ($data) {
-                    $button='<div class="relative mb-10"><button class="edit-data" data-id='.$row->id.'><i class="fas fa-ellipsis-v"></i></button>
-                   
+                ->addColumn('action', function ($row) use ($data) {
+                    $button = '<div class="relative mb-10"><button class="edit-data" data-id=' . $row->id . '><i class="fas fa-ellipsis-v"></i></button>
                     </div>';
                     return $button;
                 })
-                ->rawColumns(['status','action'])
+                ->rawColumns(['status', 'action'])
                 ->make(true);
         }
         return view('admin-panel.tournament.index');
     }
 
-    public function create(Request $request, $id)
-    {
-    }
+    public function create(Request $request, $id) {}
     public function store(TournamentRequest $request)
     {
         $request->merge(['organizaer_id' => Auth::user()->Id]);
@@ -81,34 +75,40 @@ class TournamentController extends Controller
         ]);
     }
 
+    //Team registartion with players
     public function registerTeam(Request $request)
     {
         DB::beginTransaction();
-
         try {
             $teamArray = [];
             parse_str($request->team, $teamArray);
             $tournament = Tournament::whereId($teamArray['tournament_id'])->first();
-            $team = Team::create($teamArray);
-            $tournament->teams()->attach($team);
-            foreach ($request->playerData as $playerData) {
-                $teamArray = [];
-                parse_str($playerData, $teamArray);
-                if ($user = User::whereEmail($teamArray['playerEmail'])->first()) {
-
-                } else {
-                    $password = $teamArray['playerName'] . rand(10000, 99999);
-                    $user = User::create([
-                        'email' => $teamArray['playerEmail'],
-                        'password' => Hash::make($password),
+            //Current team less than max team and registration date limit
+            if ($tournament->current_teams < $tournament->max_teams && Carbon::now()< Carbon::parse($tournament->start_date)->subDays(2)) {
+                $tournament->current_teams++;
+                $tournament->save();
+                $team = Team::create($teamArray);
+                $tournament->teams()->attach($team);
+                foreach ($request->playerData as $playerData) {
+                    $teamArray = [];
+                    parse_str($playerData, $teamArray);
+                    if ($user = User::whereEmail($teamArray['playerEmail'])->first()) {
+                    } else {
+                        $password = $teamArray['playerName'] . rand(10000, 99999);
+                        $user = User::create([
+                            'name' => $teamArray['playerName'],
+                            'email' => $teamArray['playerEmail'],
+                            'password' => Hash::make($password),
+                        ]);
+                        //Add Mail functionality to send password to player
+                    }
+                    $player = $user->players()->create([
+                        'player_position' => $teamArray['playerPosition']
                     ]);
-                    //Add Mail functionality to send password to player
+                    $team->players()->attach($player);
                 }
-                $player = $user->players()->create([
-                    'player_position' => $teamArray['playerPosition']
-                ]);
-                $team->players()->attach($player);
             }
+            dd(2);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -116,4 +116,18 @@ class TournamentController extends Controller
         }
     }
 
+    public function tournamentTeams(Request $request, $id)
+    {
+        try {
+            $this->data['tournament'] = Tournament::with('teams', 'teams.players', 'teams.players.user')->find($id);
+            return view('admin-panel.tournament.teams')->with([
+                'data' => $this->data
+            ]);
+        } catch (\Exception $e) {
+            log::info($e->getMessage());
+        }
+    }
+
+    //Add match creation functionality
+   
 }
