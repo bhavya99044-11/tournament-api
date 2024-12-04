@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 use App\TournamentStatus;
 use App\Models\Team;
+use Illuminate\Support\Facades\DB;
 use App\Models\Player;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 class TournamentController extends Controller
 {
     public $data;
@@ -39,7 +42,13 @@ class TournamentController extends Controller
                     }
                     return $status;
                 })
-                ->rawColumns(['status'])
+                ->addColumn('action',function ($row) use ($data) {
+                    $button='<div class="relative mb-10"><button class="edit-data" data-id='.$row->id.'><i class="fas fa-ellipsis-v"></i></button>
+                   
+                    </div>';
+                    return $button;
+                })
+                ->rawColumns(['status','action'])
                 ->make(true);
         }
         return view('admin-panel.tournament.index');
@@ -66,7 +75,7 @@ class TournamentController extends Controller
     //For registraion of team and player view
     public function createTeamForm($team)
     {
-        $this->data['team_id'] = $team;
+        $this->data['tournament_id'] = $team;
         return view('admin-panel.team.create')->with([
             'data' => $this->data
         ]);
@@ -74,17 +83,36 @@ class TournamentController extends Controller
 
     public function registerTeam(Request $request)
     {
+        DB::beginTransaction();
+
         try {
-
-
             $teamArray = [];
             parse_str($request->team, $teamArray);
+            $tournament = Tournament::whereId($teamArray['tournament_id'])->first();
             $team = Team::create($teamArray);
-            foreach ($request->playerData as $team) {
+            $tournament->teams()->attach($team);
+            foreach ($request->playerData as $playerData) {
+                $teamArray = [];
+                parse_str($playerData, $teamArray);
+                if ($user = User::whereEmail($teamArray['playerEmail'])->first()) {
 
+                } else {
+                    $password = $teamArray['playerName'] . rand(10000, 99999);
+                    $user = User::create([
+                        'email' => $teamArray['playerEmail'],
+                        'password' => Hash::make($password),
+                    ]);
+                    //Add Mail functionality to send password to player
+                }
+                $player = $user->players()->create([
+                    'player_position' => $teamArray['playerPosition']
+                ]);
+                $team->players()->attach($player);
             }
+            DB::commit();
         } catch (\Exception $e) {
-
+            DB::rollBack();
+            dd($e->getMessage());
         }
     }
 

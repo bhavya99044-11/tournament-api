@@ -27,4 +27,5 @@ class Tournament extends Model
     public function teams(){
         return $this->belongsToMany(Team::class,'tournament_teams','tournament_id','team_id');
     }
+
 }

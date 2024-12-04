@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tournaments', function (Blueprint $table) {
-            $table->string('tournament_type')->enum(['teams','players'])->change();
+            $table->dropColumn('tournament_type');
+        });
+
+        Schema::table('tournaments', function (Blueprint $table) {
+            $table->enum('tournament_type', ['team players','players'])->after('name');
         });
     }
 
