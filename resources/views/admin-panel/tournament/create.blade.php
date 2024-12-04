@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         contentType: false,
         processData: false,
         success: function(response) {
-            console.log(response);
+            window.location.reload();
         }
     })
 })

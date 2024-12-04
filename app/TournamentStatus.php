@@ -10,7 +10,7 @@ enum TournamentStatus:Int
 
     case Live = 2;
 
-    case Canceled = 3;
+    case Cancelled = 3;
 
 }
 
