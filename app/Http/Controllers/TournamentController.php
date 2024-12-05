@@ -108,11 +108,24 @@ class TournamentController extends Controller
                     $team->players()->attach($player);
                 }
             }
-            dd(2);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
+            Log::info($e->getMessage());
+            return redirect()->back()->with('error');
+        }
+    }
+
+    //Add team in tournament
+    public function addTeam($id){
+        try{
+        $this->data['tournament']=Tournament::findOrFail($id);
+        return view('admin-panel.team.team_add')->with([
+            'data'=>$this->data
+        ]);
+        }catch(\Exception $e){
+            log::info($e->getMessage());
+            return redirect()->back()->with('error', 'Something went wrong');
         }
     }
 
@@ -129,5 +142,5 @@ class TournamentController extends Controller
     }
 
     //Add match creation functionality
-   
+
 }

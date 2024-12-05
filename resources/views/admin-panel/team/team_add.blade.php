@@ -1,64 +1,34 @@
+
 @extends('admin-panel.layouts.app')
 @section('content')
-    <meta name="csrf_token" content="{{ csrf_token() }}">
-    <div class="min-h-screen p-6">
-        <div class="max-w-4xl mx-auto">
-            <!-- Team Registration Form -->
-            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Team Registration</h2>
-                <form id="teamForm"  class=" grid grid-cols-2">
-                    <div>
-                        <input type="hidden"
-                        value="{{$data['tournament_id']}}"
-                        name="tournament_id"
-                        required class="form-input" placeholder="Enter team name">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
-                        <input type="text"
-                            class="outline-1 placeholder:text-gray-400  outline-cyan-200 border-2 p-2 mt-1" name="name"
-                            required class="form-input" placeholder="Enter team name">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Team Email</label>
-                        <input type="email" class="outline-1 outline-cyan-200 border-2 p-2 mt-1" name="email"
-                            class="mt-1" required class="form-input" placeholder="Enter team email">
-                    </div>
-                </form>
-            </div>
+<div>
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Players</h2>
+            <button id="addPlayer" class="btn btn-primary h-6 w-6 rounded-full text-green-500 border-green-400 border-2">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
 
-            <!-- Player Management Section -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Players</h2>
-                    <button id="addPlayer"
-                        class="btn btn-primary h-6 w-6 rounded-full text-green-500 border-green-400 border-2">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
+        <div id="playersList" class="space-y-4">
+            <!-- Players will be added here dynamically -->
+        </div>
 
-                <div id="playersList" class="space-y-4">
-                    <!-- Players will be added here dynamically -->
-                </div>
-
-                <div class="mt-8 flex justify-end">
-                    <button id="submitTeam" class="btn btn-primary">
-                        <i class="fa flex items-center justify-center fa-paper-plane btn btn-primary h-6 w-6 rounded-full text-yellow-600 border-yellow-600 border-2"
-                            aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>
+        <div class="mt-8 flex justify-end">
+            <button id="submitTeam" class="btn btn-primary">
+                <i class="fa flex items-center justify-center fa-paper-plane btn btn-primary h-6 w-6 rounded-full text-yellow-600 border-yellow-600 border-2"
+                    aria-hidden="true"></i>
+            </button>
         </div>
     </div>
+</div>
 @endsection
 @push('scripts')
     <script>
         // State management
         $(document).ready(function() {
 
-            $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
-            }
-        });
+
             let players = [];
             let playerIdCounter = 1;
             var playerPositions;
@@ -71,6 +41,8 @@
                     playerPositions = response;
                 }
             })
+
+            let tournamentId=@json($data['tournament']['id']);
 
 
 
@@ -141,16 +113,16 @@
                     url: '{{ route('team.register') }}',
                     type: 'POST',
                     data: {
+                        tournament_id:tournament_id,
                         team: teamData,
                         playerData: playerData
                     },
                     success: function(response) {
-                       window.location.reload();
+                        window.location.reload();
                     }
                 });
             });
 
         });
-
     </script>
 @endpush
