@@ -18,7 +18,7 @@ class MatchController extends Controller
         try {
             $tournament = Tournament::with('teams', 'teams.players')->where(function ($query) use ($request, $data) {
                 $query->whereRaw('current_teams>=min_teams');
-            })->find($request->tournament_id);
+            })->findOrFail($request->tournament_id);
             if ($tournament) {
                 return response()->json([
                     'data' => $tournament,
@@ -39,42 +39,73 @@ class MatchController extends Controller
     {
         Db::beginTransaction();
         try {
-            $tournament = Tournament::with(['teams', 'matches' => function ($query) {
-                $query->orderBy('id' ,'DESC')->limit(1);
-            }])
-            ->when($request->round,function($query)use ($request){
-                $query->where('round', $request->round());
-            })
-            ->whereId($request->tournament_id)->whereRaw('current_teams>=min_teams')->firstOrFail();
+            $tournament = Tournament::whereId($request->tournament_id)->whereRaw('current_teams>=min_teams')->firstOrFail();
             //Return if matches already created
-            if ($tournament->matches->isNotEmpty() && $tournament->matches->first()->round!=null) {
-                    return response()->json([
-                        'message' => 'Matches are already created',
-                       'status' => 400
-                    ]);
+            
+            $matchExists = Matches::whereTournamentId($tournament->id)->whereRound($request->round)->get();
+            if ($matchExists->isNotEmpty()) {
+                return response()->json([
+                    'message' => 'Matches are already created',
+                    'status' => 400
+                ]);
+            } else {
+                if ($request->round > 1) {
+                    $tournamentTeams = Matches::with('winnerTeam')->whereTournamentId($request->tournament_id)->whereRound($request->round - 1)
+                        ->get();
+                    $emptyResult = $tournamentTeams->filter(function ($query) {
+                        return $query->result_id == null;
+                    });
+                    if ($emptyResult->isNotEmpty()) {
+                        return response()->json([
+                            'message' => 'all matches result not declared',
+                            'status' => 404
+                        ]);
+                    } else {
+                        $matchDate = Carbon::parse($tournamentTeams->where('opponent_team_id', '!=', null)->last()->match_date)->addDay();
+                        $startTime = Carbon::parse($tournament->st);
+                        $tournamentTeams = $tournamentTeams->pluck('winnerTeam');
+                        $round = $request->round;
+                    }
+                } else {
+                    $tournamentTeams = Tournament::with('teams')->whereTournamentId($request->tournament_id);
+                    $round = 1;
+                    $matchDate = Carbon::parse($tournament->start_date);
+                }
             }
-            $matchChunk = $tournament->teams->shuffle()->chunk(2);
-            $matchDate=Carbon::parse($tournament->start_date);
-        $startTime=$matchDate->format('H:i:s');
+            $matchChunk = $tournamentTeams->shuffle()->chunk(2);
+            //Taking match date from tournament start date
+            $startTime = Carbon::parse($tournament->start_date);
+            $endTime = $matchDate->copy()->addHours(3);
             $perDayMatchChunk = $matchChunk->chunk(2);
-            $key=0;
-            foreach($perDayMatchChunk as $dayMatch){
-               foreach($dayMatch as $match){
-                 $matchArray=[
-                     'home_team_id' => $match[$key]->id,
-                     'opponent_team_id' => $match[$key+1]->id,
-                     'tournament_id' => $request->tournament_id,
-                     'round' => $key+1,
-                     'created_at' => Carbon::now(),
-                     'updated_at' => Carbon::now()
-                 ];
-
-
-               }
+            $key = 0;
+            foreach ($perDayMatchChunk as $dayMatch) {
+                foreach ($dayMatch as $match) {
+                    $count = count($match) % 2 == 0;
+                    $matchArray[] = [
+                        'home_team_id' => $match[$key]->id,
+                        'opponent_team_id' => $count ? $match[$key + 1]->id : null,
+                        'tournament_id' => $request->tournament_id,
+                        'round' => $round,
+                        'result_id' => $count ? null : $match[$key + 1]->id,
+                        'match_date' => $count ? $matchDate->format('Y-m-d') : null,
+                        'start_time' => $count ? $startTime->format('H:i:s') : null,
+                        'end_time' => $count ? $endTime->format('H:i:s') : null,
+                        'status' => null,
+                    ];
+                    $startTime = $startTime->copy()->addHours(3);
+                    $endTime = $startTime->copy()->addHours(3);
+                    $key += 2;
+                }
+                $matchDate = $matchDate->copy()->addDays(1);
+                $startTime = $matchDate->copy();
+                $endTime = $startTime->copy()->addHours(3);
             }
-
-
-
+            Matches::insert($matchArray);
+            DB::commit();
+            return response()->json([
+                'message' => 'succesfully created',
+                'status' => 'success',
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 404);
@@ -84,18 +115,14 @@ class MatchController extends Controller
     public function rounds($id)
     {
         try {
-
-            $this->data['matches'] = Matches::with('homeTeam', 'opponentTeam')->whereTournamentId($id)->get();
+            $this->data['matches'] = Matches::with('homeTeam', 'opponentTeam')->whereTournamentId($id)->get()->groupBy('round');
             return view('admin-panel.match.list')->with([
                 'data' => $this->data
             ]);
         } catch (\Exception $e) {
-            dd($e->getMEssage());
+            dd($e->getMessage());
         }
     }
 
-    public function roundGenerate(){
-
-    }
+    public function roundGenerate() {}
 }
-

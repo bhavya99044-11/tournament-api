@@ -115,6 +115,7 @@
                     url: "{{ route('match.create') }}",
                     type: 'Post',
                     data: {
+                        round:1,
                         tournament_id: '{{ $data['tournament']['id'] }}'
                     },
                     success: function(response) {
