@@ -37,6 +37,7 @@ Route::get('/tournament/{id}/teams', [TournamentController::class,'tournamentTea
 
 //Team and playes registration routes
 Route::get('/tournament/{id}/team/create', [TournamentController::class,'createTeamForm'])->name('team.create');
+Route::get('/tournament/{id}/team/add', [TournamentController::class,'addTeam'])->name('team.add');
 Route::get('/player/create/{id}', [TournamentController::class,'createPlayerForm'])->name('player.create');
 Route::post('/team/register', [TournamentController::class,'registerTeam'])->name('team.register');
 Route::post('/player/register', [TournamentController::class,'registerPlayer'])->name('player.register');
@@ -46,6 +47,7 @@ Route::get('/team/{id}/players',[TeamController::class,'getTeamPlayers'])->name(
 
 //Tournament Match
 Route::get('/tournament/{id}/matches', [MatchController::class,'matches'])->name('tournament.matches');
+Route::get('/tournament/{id}/matches/rounds',[MatchController::class,'rounds'])->name('tournament.rounds');
 Route::post('/tournament/match/create', [MatchController::class,'createMatch'])->name('match.create');
 Route::get('/match/{id}/edit', [TournamentController::class,'editMatch'])->name('match.edit');
 Route::put('/match/{id}/update', [TournamentController::class,'updateMatch'])->name('match.update');
