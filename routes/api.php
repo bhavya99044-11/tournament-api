@@ -9,13 +9,13 @@ use App\Http\Controllers\Api\TournamentController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Api\Teamcontroller;
 
-Route::get('/user', function (Request $request) {
-    dd(1);
-    return $request->user();
-})->middleware('auth:api');
-Route::get('/login', function () {
-    return view('admin-panel.login');
-});
+// Route::get('/user', function (Request $request) {
+//     dd(1);
+//     return $request->user();
+// })->middleware('auth:api');
+// Route::get('/login', function () {
+//     return view('admin-panel.login');
+// });
 //Auth routes
 Route::post('/login',[AuthController::class,'login'])->name('login');
 Route::get('/logout',[AuthController::class,'logout'])->name('logout');

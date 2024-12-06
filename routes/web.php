@@ -7,13 +7,13 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MatchController;
 Use App\Http\Controllers\TournamentController;
 Use App\Http\Controllers\TeamController;
-
+use App\Http\Controllers\Auth\SocialLoginController;
 
 //admin routes login logout
 Route::get('/admin/login', function () {
     return view('admin-panel.login');
 })->name('admin.login');
-Route::group(['middleware'=>WebAuthMiddleware::class,['role:admin|super admin']],function(){
+Route::group(['middleware'=>WebAuthMiddleware::class],function(){
     Route::get('/admin/dashboard',[DashboardController::class,'dashboard'])->name('admin.dashboard');
 });
 Route::post('/admin/login', [AuthController::class,'login'])->name('admin.login');
@@ -53,3 +53,9 @@ Route::get('/match/{id}/edit', [TournamentController::class,'editMatch'])->name(
 Route::put('/match/{id}/update', [TournamentController::class,'updateMatch'])->name('match.update');
 Route::delete('/match/{id}/delete', [TournamentController::class,'destroyMatch'])->name('match.destroy');
 Route::get('/match/{id}', [TournamentController::class,'showMatch'])->name('match.show');
+
+
+//Social login
+Route::get('/auth/google/redirect',[SocialLoginController::class,'redirect'])->name('auth.social.redirect');
+Route::get('/auth/google/callback',[SocialLoginController::class,'callback'])->name('auth.social.callback');
+
