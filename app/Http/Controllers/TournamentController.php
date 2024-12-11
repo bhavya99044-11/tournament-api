@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 use App\TournamentStatus;
 use App\Models\Team;
+use \Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Models\Player;
 use App\Models\User;
