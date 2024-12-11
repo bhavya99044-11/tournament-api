@@ -28,6 +28,12 @@
             <span>Settings</span>
           </a>
         </li>
+        <li>
+            <a href="{{route('admin.tasks')}}" class="flex items-center space-x-2 p-2 hover:bg-indigo-700 rounded-lg">
+              <i class="fas fa-cog"></i>
+              <span>Tasks</span>
+            </a>
+          </li>
       </ul>
     </nav>
   </aside>

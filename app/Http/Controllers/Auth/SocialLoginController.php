@@ -24,11 +24,8 @@ class SocialLoginController extends Controller
     public function callback(Request $request){
         $code = $request->query('code');
         if (empty($code)) {
-
             return response()->json(['error' => 'Authorization code not provided'], 400);
-
         }
-
         $clientId = env('GOOGLE_CLIENT_ID');
         $clientSecret = env('GOOGLE_CLIENT_SECRET');
         $redirectUri ='http://127.0.0.1:8000/auth/google/callback';
@@ -42,7 +39,5 @@ class SocialLoginController extends Controller
             'grant_type'    => 'authorization_code',
             'access_type'=>'offline'
         ]);
-
-        dd($response->json());
     }
 }

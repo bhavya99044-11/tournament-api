@@ -13,6 +13,9 @@ use App\Http\Controllers\Auth\SocialLoginController;
 Route::get('/admin/login', function () {
     return view('admin-panel.login');
 })->name('admin.login');
+Route::get('/',function(){
+    return view('admin-panel.hello');
+});
 Route::group(['middleware'=>WebAuthMiddleware::class],function(){
     Route::get('/admin/dashboard',[DashboardController::class,'dashboard'])->name('admin.dashboard');
 });
@@ -59,3 +62,6 @@ Route::get('/match/{id}', [TournamentController::class,'showMatch'])->name('matc
 Route::get('/auth/google/redirect',[SocialLoginController::class,'redirect'])->name('auth.social.redirect');
 Route::get('/auth/google/callback',[SocialLoginController::class,'callback'])->name('auth.social.callback');
 
+Route::get('/tasks',function(){
+    return view('admin-panel.tasks');
+})->name('admin.tasks');
