@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 class Tournament extends Model
 {
     protected $table="tournaments";
@@ -26,6 +25,10 @@ class Tournament extends Model
 
     public function teams(){
         return $this->belongsToMany(Team::class,'tournament_teams','tournament_id','team_id');
+    }
+
+    public function favouriteUsers(){
+        return $this->belongsToMany(User::class,'favourite_user_tournaments','tournament_id','user_id');
     }
 
 }

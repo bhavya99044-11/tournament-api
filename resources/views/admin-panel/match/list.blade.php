@@ -12,7 +12,7 @@
                         <div class="flex flex-col gap-y-1 mb-4 items-center justify-center">
                             <h2 class="text-2xl font-bold text-center text-gray-800">Round {{ $roundMatch->first()->round }}
                             </h2>
-                            @if ($key==count($data['matches']) &&   
+                            @if ($key==count($data['matches']) &&
                                     ($roundMatch->filter(function ($match) {
                                             return $match->result_id == null;
                                         })->isEmpty() &&

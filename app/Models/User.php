@@ -67,5 +67,9 @@ class User extends Authenticatable
         return Crypt::decrypt($value);
     }
 
+    public function favouriteTournaments(){
+        return $this->belongsToMany(Tournament::class,'favourite_user_tournaments','user_id','tournament_id');
+    }
+
 
 }

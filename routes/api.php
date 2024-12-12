@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
@@ -21,5 +22,15 @@ Route::prefix('V1')->group(function(){
     Route::controller(TournamentController::class)->group(function(){
         Route::get('tournament','index')->name('tournament.index');
         Route::get('tournament/search','search')->name('tournament.search');
+        Route::get('player/stats','playerStats')->name('player.stats');
+        Route::get('tournament/{tournament}/matches','tournamentMatches')->name('tournament.matches');
+        Route::post('tournament/match-stats','MatchStats');
     });
+
+    Route::middleware(['api_auth'])->controller(ProfileController::class)->group(function(){
+        Route::get('/profile/view','profileView')->name('profile.view');
+        Route::post('/profile/update','profileUpdate')->name('profile.update');
+    });
+
+
 });
