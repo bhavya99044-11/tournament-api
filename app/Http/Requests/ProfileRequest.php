@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
-class RegisterRequest extends FormRequest
+class ProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email'=>'required|email|unique:users,email',
-            'password'=>'required|min:8',
-            'name'=>'required|string'
+            'name'=>'required|string',
+            'email'=>'required|email|unique:users,email,'.auth('api')->user()->id,
         ];
     }
 
@@ -39,8 +38,6 @@ class RegisterRequest extends FormRequest
             'success' => false,
             'message' => 'Validation errors',
             'data' => $validator->errors()
-        ], 401));
+        ], 400));
     }
-
-
 }

@@ -21,4 +21,7 @@ class Player extends Model
         return $this->belongsToMany(Player::class,'player_id','team_id');
     }
 
+    public function favouriteTournament(){
+        return $this->belongsToMany(Tournament::class,'favourite_player_tournaments','player_id','tournament_id');
+    }
 }
