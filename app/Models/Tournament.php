@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 class Tournament extends Model
 {
     protected $table="tournaments";
@@ -31,4 +32,11 @@ class Tournament extends Model
         return $this->belongsToMany(User::class,'favourite_user_tournaments','tournament_id','user_id');
     }
 
+    public function getCreatedAtAttribute($value){
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value){
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 }
