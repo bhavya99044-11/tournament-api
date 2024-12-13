@@ -19,10 +19,10 @@ class TournamentController extends Controller
         $offset = $request->offset ? $request->offset : 0;
         $result = Tournament::query();
         //perticular player played tournaments
-        if ($player = $request->get('player_id') && !$favourite = $request->get('favourite')) {
+        if ($player = $request->get('player') && !$favourite = $request->get('favourite')) {
             $result->whereHas('teams', function ($query) use ($player) {
                 $query->whereHas('players', function ($query) use ($player) {
-                    $query->where('user_id', '=', 24);
+                    $query->where('user_id', '=', auth('api')->user()->id);
                 });
             });
         }
@@ -49,9 +49,9 @@ class TournamentController extends Controller
             }
         }
         //Tournaments filtered by favourite and player
-        if ($favourite = $request->get('favourite') && $user = $request->get('player_id')) {
-            $result->whereHas('favouriteUsers', function ($query) use ($user) {
-                $query->where('user_id', '=', 1);
+        if ($favourite = $request->get('favourite') ) {
+            $result->whereHas('favouriteUsers', function ($query) {
+                $query->where('user_id', '=',auth('api')->user()->id);
             });
         }
         $result = $result->paginate($perPage, ['*'], 'page', $offset);
@@ -76,11 +76,11 @@ class TournamentController extends Controller
     public function playerStats(Request $request)
     {
         try {
-            if ($player = $request->get('player_id')) {
+            if ($player = $request->get('player')) {
                 $data['tournaments'] =  Tournament::withWhereHas('teams', function ($query) {
                     $query->whereHas('players', function ($query2) {
                         $query2->with('teams');
-                        $query2->whereUserId(24);
+                        $query2->whereUserId(auth('api')->user()->id);
                     });
                 })->select('id', 'won_team_id')->get();
                 if ($data['tournaments']) {
