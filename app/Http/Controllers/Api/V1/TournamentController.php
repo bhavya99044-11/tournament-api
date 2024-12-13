@@ -15,11 +15,11 @@ class TournamentController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $request->per_page ? $request->per_page : 10;
-        $offset = $request->offset ? $request->offset : 0;
+        $perPage = $request->has('per_page') ? $request->per_page : 10;
+        $offset = $request->has('offset')  ? $request->offset : 0;
         $result = Tournament::query();
         //perticular player played tournaments
-        if ($request->has('player') && $request->hasNot('favourite')) {
+        if ($request->has('player')) {
             $player = $request->input('player');
             $result->whereHas('teams', function ($query) use ($player) {
                 $query->whereHas('players', function ($query) use ($player) {
@@ -35,18 +35,21 @@ class TournamentController extends Controller
         //Tournaments filtered by date(past,active,upcoming)
         if ($request->has('filter')) {
             $filter = $request->input('filter');
-            // dd($filter);
             $now = date('Y-m-d H:i:s');
 
-            if ($filter == 'active') {
-                $result->where('start_datetime', '<=', $now)->where('end_datetime', '>=', $now);
-            }
-            if ($filter == 'past') {
+          switch($filter){
+            case 'past':
                 $result->where('end_datetime', '<', $now);
-            }
-            if ($filter == 'upcoming') {
-                $result->where('end_datetime', '>', $now);
-            }
+                break;
+            case 'active':
+                $result->where('start_datetime', '<', $now)
+                    ->where('end_datetime', '>', $now);
+                break;
+            case 'upcoming':
+                $result->where('start_datetime', '>', $now);
+                break;
+
+          }
         }
         //Tournaments filtered by favourite and player
         if ($request->has('favourite')) {
