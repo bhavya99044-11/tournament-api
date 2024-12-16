@@ -45,11 +45,11 @@ class AuthController extends Controller
      * @OA\JsonContent(
      * type="object",
      * @OA\Property(property="data",type="object",
-     *  @OA\Property(property="email",type="array",
-     *  @OA\Items(
-     * type="string",
-     * description="invalid",
-     * )
+     *  @OA\Property(property="email",
+     * @OA\Schema(type="array",
+     * @OA\Items(
+     * ),
+     * ),
      * ),
      * ),
      * ),

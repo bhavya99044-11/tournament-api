@@ -69,13 +69,7 @@
                                     "properties": {
                                         "data": {
                                             "properties": {
-                                                "email": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "description": "invalid",
-                                                        "type": "string"
-                                                    }
-                                                }
+                                                "email": {}
                                             },
                                             "type": "object"
                                         }
