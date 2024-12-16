@@ -34,8 +34,27 @@ class AuthController extends Controller
      * )
      * )
      * ),
-     * @OA\Response(response="200", description="User registered successfully"),
-     * @OA\Response(response="400", description="invalid data field"),
+     * @OA\Response(response="200", description="User registered successfully",
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="status",example="true"),
+     * @OA\Property(property="message",example="User registered successfully"),
+     * )
+     * ),
+     * @OA\Response(response="400", description="invalid data field",
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="data",type="object",
+     *  @OA\Property(property="email",type="array",
+     *  @OA\Items(
+     * type="string",
+     * description="invalid",
+     * )
+     * ),
+     * ),
+     * ),
+     * ),
+     * ),
      * @OA\Response(response="500", description="internal server error"),
      * @OA\Response(response="429", description="too many requests"),
      * )

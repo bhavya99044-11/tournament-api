@@ -6,39 +6,6 @@
         "version": "latest"
     },
     "paths": {
-        "/api/v1/search": {
-            "post": {
-                "summary": "User registered successfully",
-                "operationId": "a87c6b25a66d27130e1e15b67b0861d8",
-                "responses": {
-                    "200": {
-                        "description": "Successful response"
-                    }
-                }
-            }
-        },
-        "/api/v1/playeerstats": {
-            "post": {
-                "summary": "User registered successfully",
-                "operationId": "91b89770180ebf7dc6a5ea43dda03d2a",
-                "responses": {
-                    "200": {
-                        "description": "Successful response"
-                    }
-                }
-            }
-        },
-        "/api/v1/tournamentmatches": {
-            "post": {
-                "summary": "User registered successfully",
-                "operationId": "fda4a6b6d6fb7d6bf49f66d8d1de367f",
-                "responses": {
-                    "200": {
-                        "description": "Successful response"
-                    }
-                }
-            }
-        },
         "/api/v1/register": {
             "post": {
                 "tags": [
@@ -77,16 +44,46 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User registered successfully"
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "example": "User registered successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "invalid data field"
-                    },
-                    "500": {
-                        "description": "internal server error"
-                    },
-                    "429": {
-                        "description": "too many requests"
+                        "description": "invalid data field",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "description": "invalid",
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -331,6 +328,16 @@
                         }
                     }
                 }
+            }
+        }
+    },
+    "components": {
+        "responses": {
+            "500": {
+                "description": "internal server error"
+            },
+            "429": {
+                "description": "too many requests"
             }
         }
     },
