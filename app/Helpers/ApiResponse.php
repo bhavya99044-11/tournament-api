@@ -2,19 +2,19 @@
 namespace App\Helpers;
 class ApiResponse
 {
-    public static  function success($message=null,$data=null,$meta=null){
+    public static  function success($message=null,$data=null,$meta=null,$status=200){
 
         $response=[
             'status'=>true,
             'message' => $message,
+            'data'=>$data
         ];
-        if($data){
-            $response['data']=$data;
-        }
+
+
         if($meta){
             $response['meta'] = $meta;
         }
-        return response()->json($response,200);
+        return response()->json($response,$status);
     }
 
     public static function error($message='error', $status = 400){

@@ -1,0 +1,351 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Test API REST",
+        "description": "test",
+        "version": "latest"
+    },
+    "paths": {
+        "/api/v1/search": {
+            "post": {
+                "summary": "User registered successfully",
+                "operationId": "a87c6b25a66d27130e1e15b67b0861d8",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/playeerstats": {
+            "post": {
+                "summary": "User registered successfully",
+                "operationId": "91b89770180ebf7dc6a5ea43dda03d2a",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/tournamentmatches": {
+            "post": {
+                "summary": "User registered successfully",
+                "operationId": "fda4a6b6d6fb7d6bf49f66d8d1de367f",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "ad77fe138bcb384ad65d167d5c8d1cc0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Bhavya jain"
+                                    },
+                                    "email": {
+                                        "type": "email",
+                                        "example": "bhavya@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string(min 8 length)",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User registered successfully"
+                    },
+                    "400": {
+                        "description": "invalid data field"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    },
+                    "429": {
+                        "description": "too many requests"
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User Login",
+                "operationId": "bae68d1c55329ecb6e41f48285840c8f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "example": "jhasghduifjhdaFJK"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "invalid credential"
+                    }
+                }
+            }
+        },
+        "api/v1/profile-view": {
+            "post": {
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Profile view",
+                "operationId": "096deb3549b1958c073c2e063aa0b3f3",
+                "responses": {
+                    "200": {
+                        "description": "profile updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "example": "10"
+                                                },
+                                                "name": {
+                                                    "example": "bhavya"
+                                                },
+                                                "email": {
+                                                    "example": "bhavya@example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/profile-update": {
+            "post": {
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Profile update",
+                "operationId": "ba5c7abdf98905812b97297bfceb4bb8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email"
+                                    },
+                                    "name": {
+                                        "type": "name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "profile updated"
+                    }
+                }
+            }
+        },
+        "api/v1/tournament": {
+            "get": {
+                "tags": [
+                    "tournament"
+                ],
+                "summary": "Tournament Data",
+                "operationId": "dd9daeef11783beebd8d5ea23a721a59",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "player",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "favourite",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "past",
+                                "active",
+                                "upcoming"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data fetched",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "example": "10"
+                                                    },
+                                                    "name": {
+                                                        "example": "ipl2"
+                                                    },
+                                                    "won_team_id": {
+                                                        "example": "10"
+                                                    },
+                                                    "organizer_id": {
+                                                        "example": "10"
+                                                    },
+                                                    "location": {
+                                                        "example": "gujarat"
+                                                    },
+                                                    "start_dateTime": {
+                                                        "example": "2024-12-02 11:28:54"
+                                                    },
+                                                    "end_dateTime": {
+                                                        "example": "2024-12-02 11:28:54"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "total": {
+                                            "example": 0
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "example": 0
+                                                },
+                                                "current_page": {
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "profile",
+            "description": "profile"
+        },
+        {
+            "name": "tournament",
+            "description": "tournament"
+        }
+    ]
+}

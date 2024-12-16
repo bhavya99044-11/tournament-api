@@ -12,21 +12,72 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 
+
 class AuthController extends Controller
 {
+
+
+    /**
+     * @OA\Post(
+     *  tags={"Auth"},
+     * path="/api/v1/register",
+     * summary="Register a new user",
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\MediaType(
+     * mediaType="application/x-www-form-urlencoded",
+     * @OA\Schema(
+     * required={"name","email","password"},
+     * @OA\Property(property="name",type="string",example="Bhavya jain"),
+     * @OA\Property(property="email",type="email",example="bhavya@example.com"),
+     * @OA\Property(property="password",type="string(min 8 length)",example="12345678"),
+     * )
+     * )
+     * ),
+     * @OA\Response(response="200", description="User registered successfully"),
+     * @OA\Response(response="400", description="invalid data field"),
+     * @OA\Response(response="500", description="internal server error"),
+     * @OA\Response(response="429", description="too many requests"),
+     * )
+     */
     public function register(RegisterRequest $request)
     {
         try {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' =>  bcrypt($request->password),
+                'password' => bcrypt($request->password),
             ]);
             return ApiResponse::success('user registered successfully');
         } catch (\Exception $e) {
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
+    /**
+     * @OA\Post(
+     * tags={"Auth"},
+     * path="/api/v1/login",
+     * summary="User Login",
+     *  @OA\RequestBody(
+     * required=true,
+     * @OA\MediaType(
+     * mediaType="application/x-www-form-urlencoded",
+     * @OA\Schema(
+     * required={"email","password"},
+     * @OA\Property(property="email",type="email"),
+     * @OA\Property(property="password",type="password")
+     * )
+     * )
+     * ),
+     *  @OA\Response(response="200",description="User Login",
+     *  @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="data",example="jhasghduifjhdaFJK")
+     * ),
+     * ),
+     * @OA\Response(response="401",description="invalid credential"),
+     * )
+     */
     public function login(Request $request)
     {
         $validation = Validator::make($request->all(), [
