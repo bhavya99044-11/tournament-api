@@ -28,7 +28,7 @@ class ProfileRequest extends FormRequest
     {
         return [
             'name'=>'required|string',
-            'email'=>'required|email|unique:users,email,'.auth('api')->user()->id,
+            'password'=>'required',
         ];
     }
 
@@ -38,6 +38,6 @@ class ProfileRequest extends FormRequest
             'success' => false,
             'message' => 'Validation errors',
             'data' => $validator->errors()
-        ], 400));
+        ], 422));
     }
 }

@@ -1,0 +1,541 @@
+openapi: 3.0.3
+info:
+  title: 'Tournament Apis'
+  description: 'This document contains all api end point required for tournament with request and response data'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/v1/register:
+    post:
+      summary: 'User register'
+      operationId: userRegister
+      description: 'For new user registration in app'
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'User registered succesfully'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User registered succesfully'
+        422:
+          description: 'invalid data field'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  errors:
+                    email:
+                      - 'The email field is invalid'
+                  message: 'Validation errors'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The email field is invalid'
+                        items:
+                          type: string
+                  message:
+                    type: string
+                    example: 'Validation errors'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: rae56@example.net
+                  nullable: false
+                password:
+                  type: string
+                  description: 'The length of this field minimum 8.'
+                  example: '12345678'
+                  nullable: false
+                name:
+                  type: string
+                  description: 'The name of the user.'
+                  example: panthil
+                  nullable: false
+              required:
+                - email
+                - password
+      security: []
+  /api/v1/login:
+    post:
+      summary: 'User Login'
+      operationId: userLogin
+      description: 'This endpoint is used to user login'
+      parameters: []
+      responses:
+        200:
+          description: 'success token'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\":true,\n  \"data\":\n     [\n         \"token\"=>\"dasfsdafgsGSDFGRS\",\n     ]\n}"
+        422:
+          description: 'invalid data field'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  errors:
+                    email:
+                      - 'The email field is invalid'
+                  message: 'Validation errors'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The email field is invalid'
+                        items:
+                          type: string
+                  message:
+                    type: string
+                    example: 'Validation errors'
+        429:
+          description: 'too many attempts'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'too many attempts'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'too many attempts'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: paucek.felicita@example.org
+                  nullable: false
+                password:
+                  type: string
+                  description: 'The length of this field minimum 8.'
+                  example: '12345678'
+                  nullable: false
+              required:
+                - email
+                - password
+      security: []
+  /api/v1/logout:
+    post:
+      summary: 'User logout api'
+      operationId: userLogoutApi
+      description: 'User logout for this user must be logged in otherwise it will return error'
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'User logged out successfully'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User logged out successfully'
+        401:
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: unauthorized
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: unauthorized
+      tags:
+        - Authentication
+      security: []
+  /api/v1/profile/view:
+    get:
+      summary: 'User Profile-data'
+      operationId: userProfileData
+      description: 'To get logged in user profile data with tournament stats'
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"status\":true,\n\"data\":\n  [\n   {\n    id:1,\n    name:ipl20,\n    totalTournaments:100,\n    wonTournaments:50\n   }\n  ]\n}"
+        401:
+          description: unautorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"status":''false'', "message":"unautorized"}'
+      tags:
+        - Profile-data
+      security: []
+  /api/v1/profile/update:
+    post:
+      summary: 'Profile data update'
+      operationId: profileDataUpdate
+      description: 'User profile update with this api pass the name and password field to update'
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'profile is updated successfully'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'profile is updated successfully'
+        401:
+          description: unautorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"status":''false'', "message":"unauthorized"}'
+      tags:
+        - Profile-data
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'For user name update.'
+                  example: bhavesh
+                  nullable: false
+                password:
+                  type: string
+                  description: 'Minimum length of this field must be 8.'
+                  example: '61327812367'
+                  nullable: false
+      security: []
+  /api/v1/tournament:
+    get:
+      summary: 'Tournament data with query params'
+      operationId: tournamentDataWithQueryParams
+      description: 'Get all Tournament related data in this pass query according to your selection'
+      parameters:
+        -
+          in: query
+          name: isPlayer
+          description: 'To get player related tournament data.'
+          example: false
+          required: false
+          schema:
+            type: boolean
+            description: 'To get player related tournament data.'
+            example: false
+            nullable: false
+        -
+          in: query
+          name: search
+          description: 'To get user specific tournament data'
+          example: sint
+          required: false
+          schema:
+            type: string
+            description: 'To get user specific tournament data'
+            example: sint
+            nullable: false
+        -
+          in: query
+          name: 'status(past,active,upcoming)'
+          description: 'To get the tournament data .'
+          example: past
+          required: false
+          schema:
+            type: string
+            description: 'To get the tournament data .'
+            example: past
+            nullable: false
+        -
+          in: query
+          name: per_page
+          description: 'To get data rows per page.'
+          example: '2'
+          required: false
+          schema:
+            type: string
+            description: 'To get data rows per page.'
+            example: '2'
+            nullable: false
+        -
+          in: query
+          name: offset
+          description: 'To get data from selected page'
+          example: est
+          required: false
+          schema:
+            type: string
+            description: 'To get data from selected page'
+            example: est
+            nullable: false
+      responses:
+        200:
+          description: 'success token'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  data:
+                    -
+                      id: 1
+                      name: ipl20
+                      location: gujarat
+                  meta:
+                    perPage: 10
+                    currentPage: 1
+                    totalPages: 4
+                    total: 32
+                    firstItem: 1
+                    lastItem: 10
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: ipl20
+                        location: gujarat
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: ipl20
+                        location:
+                          type: string
+                          example: gujarat
+                  meta:
+                    type: object
+                    properties:
+                      perPage:
+                        type: integer
+                        example: 10
+                      currentPage:
+                        type: integer
+                        example: 1
+                      totalPages:
+                        type: integer
+                        example: 4
+                      total:
+                        type: integer
+                        example: 32
+                      firstItem:
+                        type: integer
+                        example: 1
+                      lastItem:
+                        type: integer
+                        example: 10
+      tags:
+        - Tournament-data
+      security: []
+  /api/v1/tournament/search:
+    get:
+      summary: 'Search box suggestion'
+      operationId: searchBoxSuggestion
+      description: 'For app search box suggestion in this top 5 related tournament data with id will be given'
+      parameters:
+        -
+          in: query
+          name: search
+          description: 'To search specific tournament'
+          example: tempore
+          required: false
+          schema:
+            type: string
+            description: 'To search specific tournament'
+            example: tempore
+            nullable: false
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  data:
+                    -
+                      id: 1
+                      name: ipl20
+                      location: gujarat
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: ipl20
+                        location: gujarat
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: ipl20
+                        location:
+                          type: string
+                          example: gujarat
+      tags:
+        - Tournament-data
+      security: []
+  '/api/v1/tournament/{tournament}/matches':
+    get:
+      summary: 'Tournament matches with rounds'
+      operationId: tournamentMatchesWithRounds
+      description: 'To get the selected tournament matches with rounds'
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"status\":true,\n\"data\":[\n    {\n       id:100,\n       winner_team_id:100,\n       home_team:{\n           id:100,\n           name:inpl40\n        }\n       opponent_team:{\n            id:30,\n            name:ww50\n        }\n        won_team:{\n            id:30,\n            name:ww50\n        }\n    }\n  ]\n}"
+        404:
+          description: 'No data found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'This round is not available in the tournament'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'This round is not available in the tournament'
+      tags:
+        - Tournament-data
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                round:
+                  type: integer
+                  description: 'Pass round number in this to get selected round data.'
+                  example: 8
+                  nullable: false
+      security: []
+    parameters:
+      -
+        in: path
+        name: tournament
+        description: 'Optional parameter. Pass tournament id in this.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '2'
+tags:
+  -
+    name: Authentication
+    description: ''
+  -
+    name: Profile-data
+    description: ''
+  -
+    name: Tournament-data
+    description: ''

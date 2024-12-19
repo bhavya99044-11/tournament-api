@@ -1,0 +1,444 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "Tournament Apis",
+        "_postman_id": "8b3ce776-2c23-400b-868e-0b59e5329070",
+        "description": "This document contains all api end point required for tournament with request and response data",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "description": "",
+            "item": [
+                {
+                    "name": "User register",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/register",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/register"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"rae56@example.net\",\"password\":\"12345678\",\"name\":\"panthil\"}"
+                        },
+                        "description": "For new user registration in app",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\":true,\n  \"message\":\"User registered succesfully\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"status\":false,\n  \"errors\":{\n  \"email\":[\n      \"The email field is invalid\"\n    ]\n  },\n  \"message\":\"Validation errors\"\n  }",
+                            "name": "invalid data field"
+                        }
+                    ]
+                },
+                {
+                    "name": "User Login",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/login",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/login"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"paucek.felicita@example.org\",\"password\":\"12345678\"}"
+                        },
+                        "description": "This endpoint is used to user login",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\":true,\n  \"data\":\n     [\n         \"token\"=>\"dasfsdafgsGSDFGRS\",\n     ]\n}",
+                            "name": "success token"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"status\":false,\n  \"errors\":{\n  \"email\":[\n      \"The email field is invalid\"\n    ]\n  },\n  \"message\":\"Validation errors\"\n  }",
+                            "name": "invalid data field"
+                        },
+                        {
+                            "header": [],
+                            "code": 429,
+                            "body": "{\n\"status\":false,\n\"message\":\"too many attempts\"\n\n}",
+                            "name": "too many attempts"
+                        }
+                    ]
+                },
+                {
+                    "name": "User logout api",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/logout"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "'Bearer token'"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "User logout for this user must be logged in otherwise it will return error",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\":true, \"message\":\"User logged out successfully\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"status\":false, \"message\":\"unauthorized\"}",
+                            "name": "unauthorized"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Profile-data",
+            "description": "",
+            "item": [
+                {
+                    "name": "User Profile-data",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/profile\/view",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/profile\/view"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "'Bearer token'"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "To get logged in user profile data with tournament stats",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\":true,\n\"data\":\n  [\n   {\n    id:1,\n    name:ipl20,\n    totalTournaments:100,\n    wonTournaments:50\n   }\n  ]\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"status\":'false', \"message\":\"unautorized\"}",
+                            "name": "unautorized"
+                        }
+                    ]
+                },
+                {
+                    "name": "Profile data update",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/profile\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/profile\/update"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "'Bearer token'"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"bhavesh\",\"password\":\"61327812367\"}"
+                        },
+                        "description": "User profile update with this api pass the name and password field to update",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\":true,\n\"message\":\"profile is updated successfully\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"status\":'false', \"message\":\"unauthorized\"}",
+                            "name": "unautorized"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tournament-data",
+            "description": "",
+            "item": [
+                {
+                    "name": "Tournament data with query params",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/tournament",
+                            "query": [
+                                {
+                                    "key": "isPlayer",
+                                    "value": "",
+                                    "description": "To get player related tournament data.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "sint",
+                                    "description": "To get user specific tournament data",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "status%28past%2Cactive%2Cupcoming%29",
+                                    "value": "past",
+                                    "description": "To get the tournament data .",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "2",
+                                    "description": "To get data rows per page.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "offset",
+                                    "value": "est",
+                                    "description": "To get data from selected page",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/v1\/tournament?isPlayer=&search=sint&status%28past%2Cactive%2Cupcoming%29=past&per_page=2&offset=est"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "'Bearer token'"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get all Tournament related data in this pass query according to your selection",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\":true,\n\"data\":[\n     {\n        \"id\":1,\n        \"name\":\"ipl20\",\n        \"location\":\"gujarat\"\n     }\n   ],\n\"meta\":\n    {\n      \"perPage\": 10,\n      \"currentPage\": 1,\n      \"totalPages\": 4,\n      \"total\": 32,\n      \"firstItem\": 1,\n      \"lastItem\": 10\n    }\n}",
+                            "name": "success token"
+                        }
+                    ]
+                },
+                {
+                    "name": "Search box suggestion",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/tournament\/search",
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "tempore",
+                                    "description": "To search specific tournament",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/v1\/tournament\/search?search=tempore"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "'Bearer token'"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "For app search box suggestion in this top 5 related tournament data with id will be given",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\":true,\n\"data\":[\n     {\n        \"id\":1,\n        \"name\":\"ipl20\",\n        \"location\":\"gujarat\"\n     }\n   ]\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Tournament matches with rounds",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/tournament\/:tournament\/matches",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/tournament\/:tournament\/matches",
+                            "variable": [
+                                {
+                                    "id": "tournament",
+                                    "key": "tournament",
+                                    "value": "2",
+                                    "description": "Pass tournament id in this."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "'Bearer token'"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"round\":8}"
+                        },
+                        "description": "To get the selected tournament matches with rounds",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\":true,\n\"data\":[\n    {\n       id:100,\n       winner_team_id:100,\n       home_team:{\n           id:100,\n           name:inpl40\n        }\n       opponent_team:{\n            id:30,\n            name:ww50\n        }\n        won_team:{\n            id:30,\n            name:ww50\n        }\n    }\n  ]\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n\"status\":false,\n\"message\":\"This round is not available in the tournament\"\n}",
+                            "name": "No data found"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}

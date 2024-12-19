@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 use App\TournamentStatus;
+use App\Models\Matches;
 use App\Models\Team;
 use \Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,10 @@ use App\Models\Player;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use App\Models\TeamPlayers;
+use App\Events\RecordNotificationEvent;
+use Illuminate\Support\Facades\Artisan;
+use Pusher\Pusher;
 class TournamentController extends Controller
 {
     public $data;
@@ -142,6 +147,47 @@ class TournamentController extends Controller
         }
     }
 
-    //Add match creation functionality
+    public function tournamentMatches($id){
+        try {
+            $this->data['tournament']=Tournament::with(['matches'=>function($query){
+                $query->where('opponent_team_id','!=',null);
+            },'matches.homeTeam','matches.opponentTeam'])->select('id','name')->findOrFail($id);
+            return view('admin-panel.tournament.tournament-matches')->with(['data'=>$this->data]);
+        } catch (\Exception $e) {
+            log::info($e->getMessage());
+        }
+    }
 
+    public function match($id){
+        try {
+            $this->data['match'] = Matches::with(['tournament','matchRecords'])
+            ->select('matches.*')
+            ->addSelect([
+                'home_team_name'=>Team::selectRaw('name ')
+                ->whereColumn('id', 'home_team_id'),
+                'opponent_team_name'=>Team::selectRaw('name ')
+                ->whereColumn('id', 'opponent_team_id'),
+                'home_team_player_count' => TeamPlayers::selectRaw('count(*)')
+                    ->whereColumn('team_id', 'matches.home_team_id'),
+                    'opponent_team_player_count' => TeamPlayers::selectRaw('count(*)')
+                    ->whereColumn('team_id', 'matches.opponent_team_id'),
+            ])
+            ->findOrFail($id);
+            return view('admin-panel.tournament.match_records')->with(['data'=>$this->data]);
+        } catch (\Exception $e) {
+            log::info($e->getMessage());
+        }
+    }
+
+    public function matchCron(Request $request){
+        $this->data['matches']=Matches::with(['matchRecords'=>function($query){
+            $query->select('home_team_score','match_id','opponent_team_score');
+        }])->select('matches.*')->latest()->first();
+        $this->data['home_team_score'] = $this->data['matches']['matchRecords']->sum('home_team_score');
+        $this->data['opponent_team_score'] = $this->data['matches']['matchRecords']->sum('opponent_team_score');
+        dd($this->data);
+        // $matchId=(int)$request->match_id;
+
+        // Artisan::call('app:match-records-generate'.' '.$matchId);
+    }
 }

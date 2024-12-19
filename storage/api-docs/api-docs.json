@@ -69,7 +69,12 @@
                                     "properties": {
                                         "data": {
                                             "properties": {
-                                                "email": {}
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "example": "invalid email field"
+                                                    }
+                                                }
                                             },
                                             "type": "object"
                                         }
@@ -92,6 +97,16 @@
                 "requestBody": {
                     "required": true,
                     "content": {
+                        "headers": {
+                            "schema": {
+                                "properties": {
+                                    "accept": {
+                                        "example": "Application/json"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
                         "application/x-www-form-urlencoded": {
                             "schema": {
                                 "required": [
@@ -127,8 +142,38 @@
                             }
                         }
                     },
-                    "401": {
-                        "description": "invalid credential"
+                    "400": {
+                        "description": "invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "example": "invalid credential"
+                                        },
+                                        "success": {
+                                            "example": "false"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "example": "Too many attempts"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -142,7 +187,7 @@
                 "operationId": "096deb3549b1958c073c2e063aa0b3f3",
                 "responses": {
                     "200": {
-                        "description": "profile updated",
+                        "description": "profile data view",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -160,9 +205,33 @@
                                                 },
                                                 "email": {
                                                     "example": "bhavya@example.com"
+                                                },
+                                                "totalTournaments": {
+                                                    "example": "10"
+                                                },
+                                                "wonTournaments": {
+                                                    "example": "5"
                                                 }
                                             },
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "example": "unauthorized"
+                                        },
+                                        "status": {
+                                            "example": "false"
                                         }
                                     },
                                     "type": "object"
@@ -204,7 +273,22 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "profile updated"
+                        "description": "profile updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "example": "profile updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -225,14 +309,14 @@
                         }
                     },
                     {
-                        "name": "player",
+                        "name": "isPlayer",
                         "in": "query",
                         "schema": {
                             "type": "boolean"
                         }
                     },
                     {
-                        "name": "favourite",
+                        "name": "isFavourite",
                         "in": "query",
                         "schema": {
                             "type": "boolean"
@@ -253,7 +337,7 @@
                         }
                     },
                     {
-                        "name": "filter",
+                        "name": "history",
                         "in": "query",
                         "schema": {
                             "type": "string",
@@ -314,6 +398,52 @@
                                                 }
                                             },
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/tournament/search": {
+            "get": {
+                "tags": [
+                    "tournament"
+                ],
+                "summary": "Tournament search suggestions",
+                "operationId": "6c02eedbecc8b7dcdea9e197f2094897",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data fetched",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "example": "10"
+                                                    },
+                                                    "name": {
+                                                        "example": "ipl2"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"

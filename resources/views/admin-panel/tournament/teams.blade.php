@@ -51,10 +51,10 @@
                                 </span>
                             @endif
                         </span>
-                        <button id="generateMatch"
+                        <a href="{{route('tournament-matches.show',['id'=>$data['tournament']->id])}}"
                             class="inline-flex items-center px-6 py-3 rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 ">
                             Generate Matches
-                        </button>
+                        </a>
                         <a href="{{ route('tournament.rounds', ['id' => $data['tournament']['id']]) }}"
                             class="inline-flex items-center px-6 py-3 rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200">
                             Match rounds
