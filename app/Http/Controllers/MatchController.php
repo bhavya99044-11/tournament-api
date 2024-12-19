@@ -75,11 +75,11 @@ class MatchController extends Controller
                     $tournamentTeams = Tournament::with('teams')->whereId($request->tournament_id)->first();
                     $tournamentTeams=$tournamentTeams->teams;
                     $round = 1;
-                    $matchDate = Carbon::parse($tournament->start_date);
+                    $matchDate = Carbon::parse($tournament->start_datetime);
                 }
             //Suffeling and chunking array in pair for matches
             $matchChunk = $tournamentTeams->shuffle()->chunk(2);
-            $startTime = Carbon::parse($tournament->start_date);
+            $startTime = Carbon::parse($tournament->start_datetime);
             $endTime = $startTime->copy()->addHours(3);
             //Again chunk created For per day two matches
             $perDayMatchChunk = $matchChunk->chunk(2);

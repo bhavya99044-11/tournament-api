@@ -8,7 +8,7 @@ use App\Http\Controllers\MatchController;
 Use App\Http\Controllers\TournamentController;
 Use App\Http\Controllers\TeamController;
 use App\Http\Controllers\Auth\SocialLoginController;
-
+use App\Http\Controllers\TournamentMatchController;
 //admin routes login logout
 Route::get('/admin/login', function () {
     return view('admin-panel.login');
@@ -57,7 +57,9 @@ Route::put('/match/{id}/update', [TournamentController::class,'updateMatch'])->n
 Route::delete('/match/{id}/delete', [TournamentController::class,'destroyMatch'])->name('match.destroy');
 Route::get('/match/{id}', [TournamentController::class,'showMatch'])->name('match.show');
 
-
+Route::get('tournament-matches/{id}', [TournamentController::class,'tournamentMatches'])->name('tournament-matches.show');
+Route::get('match/{id}/record', [TournamentController::class,'match'])->name('match.show');
+Route::post('/match/cron', [TournamentController::class,'matchCron'])->name('match.cron');
 //Social login
 Route::get('/auth/google/redirect',[SocialLoginController::class,'redirect'])->name('auth.social.redirect');
 Route::get('/auth/google/callback',[SocialLoginController::class,'callback'])->name('auth.social.callback');
@@ -65,3 +67,6 @@ Route::get('/auth/google/callback',[SocialLoginController::class,'callback'])->n
 Route::get('/tasks',function(){
     return view('admin-panel.tasks');
 })->name('admin.tasks');
+
+//Tournamet match
+Route::resource('tournament-match',TournamentMatchController::class);

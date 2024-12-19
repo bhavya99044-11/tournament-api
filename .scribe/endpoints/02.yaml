@@ -1,0 +1,127 @@
+name: Profile-data
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/profile/view
+    metadata:
+      groupName: Profile-data
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'User Profile-data'
+      description: 'To get logged in user profile data with tournament stats'
+      authenticated: false
+      custom: []
+    headers:
+      Authorization: "'Bearer token'"
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "status":true,
+          "data":
+            [
+             {
+              id:1,
+              name:ipl20,
+              totalTournaments:100,
+              wonTournaments:50
+             }
+            ]
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"status":''false'', "message":"unautorized"}'
+        headers: []
+        description: unautorized
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/profile/update
+    metadata:
+      groupName: Profile-data
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Profile data update'
+      description: 'User profile update with this api pass the name and password field to update'
+      authenticated: false
+      custom: []
+    headers:
+      Authorization: "'Bearer token'"
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'For user name update.'
+        required: false
+        example: bhavesh
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: 'Minimum length of this field must be 8.'
+        required: false
+        example: '61327812367'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      name: bhavesh
+      password: '61327812367'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "status":true,
+          "message":"profile is updated successfully"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"status":''false'', "message":"unauthorized"}'
+        headers: []
+        description: unautorized
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

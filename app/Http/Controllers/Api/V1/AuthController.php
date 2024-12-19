@@ -11,35 +11,40 @@ use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
-
+/**
+ *
+ * @group Authentication
+ *
+ */
 
 class AuthController extends Controller
 {
 
-
     /**
-     * @OA\Post(
-     *  tags={"Auth"},
-     * path="/api/v1/register",
-     * summary="Register a new user",
-     * @OA\RequestBody(
-     * required=true,
-     * @OA\MediaType(
-     * mediaType="application/x-www-form-urlencoded",
-     * @OA\Schema(
-     * required={"name","email","password"},
-     * @OA\Property(property="name",type="string",example="Bhavya jain"),
-     * @OA\Property(property="email",type="email",example="bhavya@example.com"),
-     * @OA\Property(property="password",type="string(min 8 length)",example="12345678"),
-     * )
-     * )
-     * ),
-     * @OA\Response(response="200", description="User registered successfully"),
-     * @OA\Response(response="400", description="invalid data field"),
-     * @OA\Response(response="500", description="internal server error"),
-     * @OA\Response(response="429", description="too many requests"),
-     * )
+     * User register
+     *
+     *
+     * For new user registration in app
+     *
+     * @bodyParam password string required The length of this field minimum 8. Example:12345678
+     * @bodyParam name string The name of the user. Example:panthil
+     * @response 200 scenario=success {
+     *   "status":true,
+     *   "message":"User registered succesfully"
+     * }
+     * @response 422 scenario="invalid data field" {
+     *   "status":false,
+     *   "errors":{
+     *   "email":[
+     *       "The email field is invalid"
+     *     ]
+     *   },
+     *   "message":"Validation errors"
+     *   }
+     *
      */
+
+
     public function register(RegisterRequest $request)
     {
         try {
@@ -53,30 +58,33 @@ class AuthController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
+
     /**
-     * @OA\Post(
-     * tags={"Auth"},
-     * path="/api/v1/login",
-     * summary="User Login",
-     *  @OA\RequestBody(
-     * required=true,
-     * @OA\MediaType(
-     * mediaType="application/x-www-form-urlencoded",
-     * @OA\Schema(
-     * required={"email","password"},
-     * @OA\Property(property="email",type="email"),
-     * @OA\Property(property="password",type="password")
-     * )
-     * )
-     * ),
-     *  @OA\Response(response="200",description="User Login",
-     *  @OA\JsonContent(
-     * type="object",
-     * @OA\Property(property="data",example="jhasghduifjhdaFJK")
-     * ),
-     * ),
-     * @OA\Response(response="401",description="invalid credential"),
-     * )
+     * User Login
+     *
+     * This endpoint is used to user login
+     * @bodyParam password string required The length of this field minimum 8. Example:12345678
+     * @response 200 scenario="success token" {
+     *   "status":true,
+     *   "data":
+     *      [
+     *          "token"=>"dasfsdafgsGSDFGRS",
+     *      ]
+     * }
+      * @response 422 scenario="invalid data field" {
+     *   "status":false,
+     *   "errors":{
+     *   "email":[
+     *       "The email field is invalid"
+     *     ]
+     *   },
+     *   "message":"Validation errors"
+     *   }
+     *@response 429 scenario="too many attempts" {
+     * "status":false,
+     * "message":"too many attempts"
+     *
+     * }
      */
     public function login(Request $request)
     {
@@ -93,6 +101,15 @@ class AuthController extends Controller
         }
         return ApiResponse::error('Invalid credentials', 401);
     }
+
+    /**
+     *User logout api
+
+     * User logout for this user must be logged in otherwise it will return error
+    * @header Authorization 'Bearer token'
+    * @response 200 scenario="success" {"status":true, "message":"User logged out successfully"}
+    * @response 401 scenario="unauthorized" {"status":false, "message":"unauthorized"}
+     */
     public function logout(Request $request)
     {
         if (Auth::guard('api')->user()) {

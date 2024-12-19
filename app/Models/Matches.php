@@ -33,4 +33,8 @@ class Matches extends Model
     public function tournament(){
         return $this->belongsTo(Tournament::class,'tournament_id','id');
     }
+
+    public function matchRecords(){
+        return $this->hasMany(MatchRecords::class,'match_id');
+    }
 }
