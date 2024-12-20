@@ -35,7 +35,7 @@ class ProfileController extends Controller
         $user = auth('api')->user();
         $tournaments = Tournament::withWhereHas('teams', function ($query,$user) {
             $query->whereHas('players', function ($query2,$user) {
-                $query2->with('teams');
+                // $query2->with('teams');
                 $query2->whereUserId($user->id);
             });
         })->select('id', 'won_team_id')->get();

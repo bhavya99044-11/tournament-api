@@ -23,6 +23,7 @@ use App\Models\TeamPlayers;
 use App\Events\RecordNotificationEvent;
 use Illuminate\Support\Facades\Artisan;
 use Pusher\Pusher;
+use App\Models\MatchRecords;
 class TournamentController extends Controller
 {
     public $data;
@@ -90,7 +91,7 @@ class TournamentController extends Controller
             parse_str($request->team, $teamArray);
             $tournament = Tournament::whereId($teamArray['tournament_id'])->first();
             //Current team less than max team and registration date limit
-            if ($tournament->current_teams < $tournament->max_teams && Carbon::now()< Carbon::parse($tournament->start_date)->subDays(2)) {
+            if ($tournament->current_teams < $tournament->max_teams && Carbon::now() < Carbon::parse($tournament->start_date)->subDays(2)) {
                 $tournament->current_teams++;
                 $tournament->save();
                 $team = Team::create($teamArray);
@@ -123,13 +124,14 @@ class TournamentController extends Controller
     }
 
     //Add team in tournament
-    public function addTeam($id){
-        try{
-        $this->data['tournament']=Tournament::findOrFail($id);
-        return view('admin-panel.team.team_add')->with([
-            'data'=>$this->data
-        ]);
-        }catch(\Exception $e){
+    public function addTeam($id)
+    {
+        try {
+            $this->data['tournament'] = Tournament::findOrFail($id);
+            return view('admin-panel.team.team_add')->with([
+                'data' => $this->data
+            ]);
+        } catch (\Exception $e) {
             log::info($e->getMessage());
             return redirect()->back()->with('error', 'Something went wrong');
         }
@@ -147,47 +149,47 @@ class TournamentController extends Controller
         }
     }
 
-    public function tournamentMatches($id){
+    public function tournamentMatches($id)
+    {
         try {
-            $this->data['tournament']=Tournament::with(['matches'=>function($query){
-                $query->where('opponent_team_id','!=',null);
-            },'matches.homeTeam','matches.opponentTeam'])->select('id','name')->findOrFail($id);
-            return view('admin-panel.tournament.tournament-matches')->with(['data'=>$this->data]);
+            $this->data['tournament'] = Tournament::with(['matches' => function ($query) {
+                $query->where('opponent_team_id', '!=', null);
+            }, 'matches.homeTeam', 'matches.opponentTeam'])->select('id', 'name')->findOrFail($id);
+            return view('admin-panel.tournament.tournament-matches')->with(['data' => $this->data]);
         } catch (\Exception $e) {
             log::info($e->getMessage());
         }
     }
 
-    public function match($id){
+    public function match($id)
+    {
         try {
-            $this->data['match'] = Matches::with(['tournament','matchRecords'])
-            ->select('matches.*')
-            ->addSelect([
-                'home_team_name'=>Team::selectRaw('name ')
-                ->whereColumn('id', 'home_team_id'),
-                'opponent_team_name'=>Team::selectRaw('name ')
-                ->whereColumn('id', 'opponent_team_id'),
-                'home_team_player_count' => TeamPlayers::selectRaw('count(*)')
-                    ->whereColumn('team_id', 'matches.home_team_id'),
-                    'opponent_team_player_count' => TeamPlayers::selectRaw('count(*)')
-                    ->whereColumn('team_id', 'matches.opponent_team_id'),
-            ])
-            ->findOrFail($id);
-            return view('admin-panel.tournament.match_records')->with(['data'=>$this->data]);
+            $this->data['match'] = Matches::with(['matchRecords'=>function($query){
+                $query->select('match_id','home_team_score','opponent_team_score');
+            }])
+                ->join('tournaments', 'tournaments.id', '=', 'matches.tournament_id')
+                ->join('teams as home_team', 'home_team.id', '=', 'matches.home_team_id')
+                ->join('teams as opponent_team', 'opponent_team.id', '=', 'matches.opponent_team_id')
+                ->select('home_team.name as home_team_name','matches.*','tournaments.name as tournament_name','tournaments.start_datetime as tournament_start','opponent_team.name as opponent_team_name', 'matches.*')
+                ->findOrFail($id);
+            return view('admin-panel.tournament.match_records')->with(['data' => $this->data]);
         } catch (\Exception $e) {
-            log::info($e->getMessage());
+            dd($e->getMessage());
         }
     }
 
-    public function matchCron(Request $request){
-        $this->data['matches']=Matches::with(['matchRecords'=>function($query){
-            $query->select('home_team_score','match_id','opponent_team_score');
-        }])->select('matches.*')->latest()->first();
-        $this->data['home_team_score'] = $this->data['matches']['matchRecords']->sum('home_team_score');
-        $this->data['opponent_team_score'] = $this->data['matches']['matchRecords']->sum('opponent_team_score');
+    public function matchCron(Request $request)
+    {
+
+        $matchId = (int)$request->match_id;
+
+        Artisan::call('app:match-records-generate' . ' ' . $matchId);
+    }
+
+    public function practice()
+    {
+        $this->data=MatchRecords::limit(10)->latest()->get();
         dd($this->data);
-        // $matchId=(int)$request->match_id;
-
-        // Artisan::call('app:match-records-generate'.' '.$matchId);
+        return view('admin-panel.tournament.practice');
     }
 }

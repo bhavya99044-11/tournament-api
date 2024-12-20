@@ -40,11 +40,7 @@ class RecordsNotification extends Command
             env('PUSHER_APP_ID'),
             $options
         );
-        $this->data['matches']=Matches::with(['matchRecords'=>function($query){
-            $query->select('home_team_score','match_id','opponent_team_score')->latest()->limit(10);
-        }])->select('matches.*')->latest()->first();
-        $this->data['home_team_score'] = $this->data['matches']['matchRecords']->sum('home_team_score');
-        $this->data['opponent_team_score'] = $this->data['matches']['matchRecords']->sum('opponent_team_score');
+        $this->data=MatchRecords::limit(10)->latest()->get();
 
          $response = $pusher->trigger('records-notification', 'RecordNotificationEvent', ['data' => $this->data]);
     }
