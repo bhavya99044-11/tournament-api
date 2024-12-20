@@ -39,4 +39,9 @@ class Tournament extends Model
     public function getUpdatedAtAttribute($value){
         return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+
+    public function teamPlayers(){
+        return $this->hasOneThrough(TeamPlayers::class,TournamentTeams::class,'tournament_id','team_id','tournament_id','team_id');
+    }
+    
 }

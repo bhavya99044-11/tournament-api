@@ -54,12 +54,8 @@ class TournamentController extends Controller
         $offset = $request->has('offset')  ? $request->offset : 0;
         $result = Tournament::query();
         //perticular player played tournaments
-        if ($request->has('player') && $player = $request->input('player')) {
-            $result->whereHas('teams', function ($query) use ($player) {
-                $query->whereHas('players', function ($query) use ($player) {
-                    $query->where('user_id', '=', auth('api')->user()->id);
-                });
-            });
+        if ($request->has('player')) {
+            $result->with('teamPlayers');
         }
         //Search query
         if ($request->has('search') && $search = $request->input('search')) {
@@ -88,7 +84,7 @@ class TournamentController extends Controller
             });
         }
         $result = $result->paginate($perPage, ['*'], 'page', $offset);
-
+        dd($result);
         $meta = [
             'perPage' => $result->perPage(),
             'currentPage' => $result->currentPage(),
@@ -125,10 +121,9 @@ class TournamentController extends Controller
     {
         try {
             $msg = 'result not found';
-            $tournaments = null;
+            $tournaments = [];
             if ($request->has('search')) {
-                $query = $request->input('search');
-                $tournaments = Tournament::where('name', 'LIKE', '%' . $query . '%')->select('name', 'id')->take(5)->get();
+                $tournaments = Tournament::where('name', 'LIKE', '%' . $request->input('search') . '%')->select('name', 'id')->take(5)->get();
                 $msg = $tournaments ? "result found" : $msg;
             }
             return ApiResponse::success($msg, $tournaments);

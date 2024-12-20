@@ -51,17 +51,22 @@
 
         var channel = pusher.subscribe('records-notification');
         channel.bind('RecordNotificationEvent', function(data) {
-            console.log(data.data.home_team_score);
+            let collection=data.data;
+            console.log(collection);
 
+            let html='';
+            for( let item in collection){
+                 html += `Match${item} Score 1 : ${collection[item].home_team_score} Score 2 : ${collection[item].opponent_team_score} </br>`;
+            }
+            console.log(html);
             Swal.fire({
-                toast: true,
-                icon: 'success',
                 title: 'Last 10 records',
-                text: `home team:${data.data.home_team_score}  opponent_team:${data.data.opponent_team_score}`,
+                html: html,
                 animation: false,
                 position: 'top',
+                showCloseButton: true,
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 5000,
             })
         })
     });

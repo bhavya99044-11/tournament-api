@@ -56,6 +56,7 @@ Route::get('/match/{id}/edit', [TournamentController::class,'editMatch'])->name(
 Route::put('/match/{id}/update', [TournamentController::class,'updateMatch'])->name('match.update');
 Route::delete('/match/{id}/delete', [TournamentController::class,'destroyMatch'])->name('match.destroy');
 Route::get('/match/{id}', [TournamentController::class,'showMatch'])->name('match.show');
+Route::get('/practice', [TournamentController::class,'practice'])->name('practice.show');
 
 Route::get('tournament-matches/{id}', [TournamentController::class,'tournamentMatches'])->name('tournament-matches.show');
 Route::get('match/{id}/record', [TournamentController::class,'match'])->name('match.show');
