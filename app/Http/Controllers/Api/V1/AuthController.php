@@ -53,9 +53,9 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
-            return ApiResponse::success('user registered successfully');
+            return $this->success('user registered successfully');
         } catch (\Exception $e) {
-            return ApiResponse::error($e->getMessage(), 500);
+            return $this->error($e->getMessage(), 500);
         }
     }
 
@@ -97,9 +97,9 @@ class AuthController extends Controller
         }
         if (Auth::attempt($request->all())) {
             $data['token'] = Auth::user()->createToken('vvvv')->accessToken;
-            return ApiResponse::success('User logged in successfully', $data['token']);
+            return $this->success('User logged in successfully', $data['token']);
         }
-        return ApiResponse::error('Invalid credentials', 401);
+        return $this->error('Invalid credentials', 401);
     }
 
     /**
@@ -114,8 +114,8 @@ class AuthController extends Controller
     {
         if (Auth::guard('api')->user()) {
             Auth::guard('api')->user()->token()->revoke();
-            return ApiResponse::success('User logged out successfully');
+            return $this->success('User logged out successfully');
         }
-        return ApiResponse::error('User not logged in', 401);
+        return $this->error('User not logged in', 401);
     }
 }
