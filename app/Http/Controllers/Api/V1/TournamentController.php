@@ -58,13 +58,13 @@ class TournamentController extends Controller
             $result->with('teamPlayers');
         }
         //Search query
-        if ($request->has('search') && $search = $request->input('search')) {
-            $result->where('name', 'LIKE', '%' . $search . '%');
+        if($request->has('search') ){
+            $result->where('name', 'LIKE', '%' . $request->input('search'). '%');
         }
         //Tournaments filtered by date(past,active,upcoming)
-        if ($request->has('status') && $filter = $request->input('status')) {
+        if ($request->has('status')) {
             $now = date('Y-m-d H:i:s');
-            switch ($filter) {
+            switch ($request->input('status')) {
                 case 'past':
                     $result->where('end_datetime', '<', $now);
                     break;
@@ -78,22 +78,22 @@ class TournamentController extends Controller
             }
         }
         //Tournaments filtered by favourite and player
-        if ($request->has('isFavourite') &&  $favourite = $request->input('isFavourite')) {
+        if ($request->has('isFavourite')) {
             $result->whereHas('favouriteUsers', function ($query) {
-                $query->where('user_id', '=', auth('api')->user()->id);
+                $query->whereUserId( 24);
+            });
+        }
+        if ($request->has('isPlayer')) {
+            $result->whereHas('teams.players', function ($query) {
+                $query->whereUserId(24);
             });
         }
         $result = $result->paginate($perPage, ['*'], 'page', $offset);
-        dd($result);
         $meta = [
-            'perPage' => $result->perPage(),
             'currentPage' => $result->currentPage(),
-            'totalPages' => $result->lastPage(),
             'total' => $result->total(),
-            'firstItem' => $result->firstItem(),
-            'lastItem' => $result->lastItem(),
         ];
-        return ApiResponse::success('data fetched', $result->items(), $meta);
+        return $this->success('data fetched', $result->items(), $meta);
     }
 
 
@@ -126,9 +126,9 @@ class TournamentController extends Controller
                 $tournaments = Tournament::where('name', 'LIKE', '%' . $request->input('search') . '%')->select('name', 'id')->take(5)->get();
                 $msg = $tournaments ? "result found" : $msg;
             }
-            return ApiResponse::success($msg, $tournaments);
+            return $this->success($msg, $tournaments);
         } catch (\Exception $e) {
-            return ApiResponse::error($e->getMessage(), 500);
+            return $this->error($e->getMessage(), 500);
         }
     }
 
@@ -170,16 +170,15 @@ class TournamentController extends Controller
     public function tournamentMatches(Request $request, $tournament)
     {
         try {
-            $round = $request->has('round') ? $request->input('round') : Matches::whereTournamentId($tournament)->orderBy('id', 'DESC')->first();
-            if ($round) {
+            $round = $request->has('round') ? $request->input('round') : Matches::whereTournamentId($tournament)->orderBy('id', 'DESC')->first();            if ($round) {
                 $matches = Matches::with(['opponentTeam','homeTeam','winnerTeam'])->where('round', $round)->whereTournamentId($tournament)->get();
                 if ($matches->isNotEmpty()) {
-                    return ApiResponse::success('success', $matches);
+                    return $this->success('success', $matches);
                 }
             }
-            return ApiResponse::error('This round is not available in the tournament', 400);
+            return $this->error('This round is not available in the tournament', 400);
         } catch (\Exception $e) {
-            return ApiResponse::error($e->getMessage(), 500);
+            return $this->error($e->getMessage(), 500);
         }
     }
 }

@@ -31,13 +31,13 @@ class RecordsNotification extends Command
     public function handle()
     {
         $options = [
-            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'cluster' => config('app.pusher.cluster'),
             'useTLS' => true
         ];
         $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
+            config('app.pusher.key'),
+            config('app.pusher.secret'),
+            config('app.pusher.app_id'),
             $options
         );
         $this->data=MatchRecords::limit(10)->latest()->get();

@@ -46,7 +46,7 @@ class ProfileController extends Controller
                 return $query->won_team_id == $query->teams->first()->id;
             })->count();
         }
-        return ApiResponse::success('Profile', $user);
+        return $this->success('Profile', $user);
     }
 
 
@@ -72,9 +72,9 @@ class ProfileController extends Controller
             $user->name = $request->input('name');
             $user->password = Hash::make($request->input('password'));
             $user->save();
-            return ApiResponse::success('Profile updated');
+            return $this->success('Profile updated');
         } catch (\Exception $e) {
-            return ApiResponse::error($e->getMessage(), 500);
+            return $this->error($e->getMessage(), 500);
         }
     }
 }
