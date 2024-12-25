@@ -120,13 +120,14 @@ class TournamentController extends Controller
     public function search(Request $request)
     {
         try {
-            $msg = 'result not found';
             $tournaments = [];
             if ($request->has('search')) {
                 $tournaments = Tournament::where('name', 'LIKE', '%' . $request->input('search') . '%')->select('name', 'id')->take(5)->get();
-                $msg = $tournaments ? "result found" : $msg;
             }
-            return $this->success($msg, $tournaments);
+            if($tournaments->isEmpty()){
+                return $this->error('No tournaments found matching your search criteria.', 404);
+            }
+            return $this->success('tournament data', $tournaments);
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), 500);
         }
