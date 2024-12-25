@@ -30,6 +30,8 @@ class TournamentController extends Controller
     public function __construct() {}
     public function index(Request $request)
     {
+        log::info(env('PUSHER_APP_KEY'));
+        // log::info(config('app.pusher.key'));
         $tournamentStatus = TournamentStatus::cases();
         $data = Tournament::latest()->get();
         //Datatbel for the tournament
@@ -67,6 +69,7 @@ class TournamentController extends Controller
     //Shows dahsboard tournaments on status value
     public function filterTournaments(Request $request, $id)
     {
+
         $this->data['tournaments'] = Tournament::whereStatus($id)->get();
         return view('admin-panel.tournament.tournament_list')->with([
             'data' => $this->data
@@ -118,7 +121,6 @@ class TournamentController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::info($e->getMessage());
             return redirect()->back()->with('error');
         }
     }
@@ -139,6 +141,7 @@ class TournamentController extends Controller
 
     public function tournamentTeams(Request $request, $id)
     {
+
         try {
             $this->data['tournament'] = Tournament::with('teams', 'teams.players', 'teams.players.user')->find($id);
             return view('admin-panel.tournament.teams')->with([

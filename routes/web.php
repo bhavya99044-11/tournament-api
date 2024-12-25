@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\WebAuthMiddleware;
 use App\Http\Controllers\DashboardController;
@@ -20,9 +21,8 @@ Route::get('/',function(){
 Route::group(['middleware'=>WebAuthMiddleware::class],function(){
     Route::get('/admin/dashboard',[DashboardController::class,'dashboard'])->name('admin.dashboard');
 });
-Route::post('/admin/login', [AuthController::class,'login'])->name('admin.login');
+// Route::post('/admin/login', [AuthController::class,'login'])->name('admin.login');
 Route::get('token/{name}',[DashboardController::class,'token'])->name('token')->middleware([WebAuthMiddleware::class]);
-Route::get('auth/logout',[AuthController::class,'logout'])->name('auth.logout');
 
 //Tournament routes
 Route::get('/tournament', [TournamentController::class,'index'])->name('tournament.index');
@@ -56,7 +56,7 @@ Route::post('/tournament/match/create', [MatchController::class,'createMatch'])-
 Route::get('/match/{id}/edit', [TournamentController::class,'editMatch'])->name('match.edit');
 Route::put('/match/{id}/update', [TournamentController::class,'updateMatch'])->name('match.update');
 Route::delete('/match/{id}/delete', [TournamentController::class,'destroyMatch'])->name('match.destroy');
-Route::get('/match/{id}', [TournamentController::class,'showMatch'])->name('match.show');
+Route::get('/match/{id}', [TournamentController::class,'showMatch']);
 Route::get('/practice', [TournamentController::class,'practice'])->name('practice.show');
 
 Route::get('tournament-matches/{id}', [TournamentController::class,'tournamentMatches'])->name('tournament-matches.show');
@@ -72,6 +72,11 @@ Route::resource('csv',LaravelCsvController::class)->only([
 
 Route::post('csv/createdata',[LaravelCsvController::class,'csvCreate'])->name('csvCreator');
 
+Route::resource('orders',OrderController::class);
+Route::get('/hotel-view/{id}',function(){
+    return view('hotel_view');
+});
 
-//Tournamet match
-Route::resource('tournament-match',TournamentMatchController::class);
+Route::get('/hotel-view',function(){
+     return view('hotel-list');
+});
