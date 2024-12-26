@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\TournamentController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Api\Teamcontroller;
 use App\Http\Controllers\Api\V1\HotelController;
+use App\Http\Controllers\Api\V1\HotelDateController;
 use App\Http\Controllers\Api\V1\RoomController;
 Route::controller(AuthController::class)->prefix('v1')->group(function () {
     Route::post('register', 'register')->name('auth.register');
@@ -19,7 +20,7 @@ Route::controller(AuthController::class)->prefix('v1')->group(function () {
 Route::prefix('v1')->group(function () {
     Route::resource('hotel',HotelController::class);
 Route::resource('room',RoomController::class);
-
+Route::resource('hotel-date',HotelDateController::class);
     Route::controller(TournamentController::class)->group(function () {
         Route::get('tournament', 'index');
         Route::get('tournament/search', 'search');

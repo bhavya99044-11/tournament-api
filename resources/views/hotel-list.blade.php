@@ -23,20 +23,22 @@
                     <label class="font-medium text-gray-800">Url</label>
                     <input type="file" name="hotel_image" class="w-full outline-none rounded bg-gray-100 p-2 mt-2 mb-3" />
                     <div class="amenitiesbox">
-                    <input type="checkbox" name="amenities[]">Hotel service</input>
-                    <input type="checkbox" name="amenities[]">Room service</input>
+                    <input type="checkbox" name="amenities[]" value=0 id="amenities_0">Hotel service</input>
+                    <input type="checkbox" name="amenities[]" value=1 id="amenities_1">Room service</input>
                     </div>
                 </div>
-                <button class="p-3 bg-blue-300" type="submit" >Save</button>
+                <button class="p-3 bg-blue-300" type="submit" id="saveFormButton" >Save</button>
+                <button class="p-3 bg-blue-300" type="submit" id="updateFormButton" >Update</button>
 
             </form>
                 <div class="bg-gray-200 px-4 py-3 text-right">
                     <button type="button" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2"
-                        onclick="closeModal()"><i class="fas fa-times"></i> Cancel</button>
+                        id="close-modal"><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
     </div>
+
 
 @endsection
 
@@ -46,13 +48,13 @@
 
             $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
             }
         });
-
-            $('#saveHotel').on('submit',function(e){
+            $(document).on('click','#saveFormButton',function(e){
                 e.preventDefault();
-            let formData=new FormData(this);
+                let form=document.getElementById('saveHotel');
+            let formData=new FormData(form);
                 $.ajax({
                     url: 'http://192.168.1.200:8000/api/v1/hotel',
                     method: 'POST',
@@ -65,7 +67,6 @@
                     }
                 })
             })
-
             $.ajax({
                 url: 'http://192.168.1.200:8000/api/v1/hotel',
                 method: 'GET',
@@ -79,12 +80,11 @@
                                 <td><img  src="http://192.168.1.200:8000/images/${hotel.image_url}"></img></td>
                                 <td><a class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded" href="http://192.168.1.200:8000/hotel-view/${hotel.id}">View</a></td>
                                 <td><button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded" data-id="${hotel.id}" id="edit-button">Edit</button></td>
-                                <td><button class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded" data-id="${hotel.id}">Delete</button></td>
+                                <td><button class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded" data-id="${hotel.id}" id="delete-button" class="delete-button">Delete</button></td>
                             </tr>
                             `;
                             hotelDiv.innerHTML+=innerHTML;
                         });
-
                     }
                 }
             })
@@ -96,27 +96,64 @@
                     method: 'GET',
                     success: function(response) {
                         if(response.status==200){
-
+                            let form=document.getElementById('saveHotel');
+                            form.setAttribute('data-id',response.data.id)
+                            let button=$('#updateFormButton').show();
+                            let cc=$('#saveFormButton').hide();
                             let hotelDiv=document.getElementById('hotel_name');
                             hotelDiv.value=response.data.name;
                             let hotelImage=document.getElementById('hotel_image');
-                            let amen=response.data.hotem_amenities;
-                            let html=``;
-                             html+=` <input type="checkbox" value="Hotel services" ${amen.find((cc)=>cc.name=='Hotel services')`selected`} name="amenities[]">Hotel Services</input>
-                                <input type="checkbox" value="Room services" name="amenities[]" ${amen.includes('Room services')`selected`} >Room Services</input>`;
-                            document.getElementById('amenities').innerHtml=html;
+                            response.data.hotem_amenities.map((data)=>{
+                               let select=document.getElementById('amenities_'+parseInt(data.name));
+                               select.checked=true;
+                            });
                             document.getElementById('modal').classList.toggle('hidden');
-                                                }
+                        }
+                    }
+                })
+            })
+
+            $(document).on('click','#delete-button',function(){
+                let id=$(this).data('id');
+                console.log(id);
+                $.ajax({
+                    url: `http://192.168.1.200:8000/api/v1/hotel/${id}`,
+                    method: 'DELETE',
+                    success: function(response) {
+                        window.location.reload();
+                        console.log(response);
+                    }
+                })
+            })
+
+            $(document).on('click','#updateFormButton',function(e){
+                e.preventDefault();
+                let form=document.getElementById('saveHotel');
+                let formData=new FormData(form);
+                formData.append('_token', $('meta[name="csrf_token"]').attr('content'));
+                formData.append('_method', 'PUT');
+                let id=form.getAttribute('data-id');
+                $.ajax({
+                    url: `http://192.168.1.200:8000/api/v1/hotel/${id}`,
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        window.location.reload();
+                        console.log(response);
                     }
                 })
             })
             $(document).on('click', '#hotel-create', function() {
+                let button=$('#updateFormButton').hide();
+                let cc=$('#saveFormButton').show();
                 document.getElementById('modal').classList.toggle('hidden');
             })
-
-            function closeModal(){
+            $(document).on('click','#close-modal',function(){
                 document.getElementById('modal').classList.toggle('hidden');
-            }
+            })
         });
+
     </script>
 @endpush

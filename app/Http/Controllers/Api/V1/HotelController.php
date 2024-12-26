@@ -81,7 +81,7 @@ class HotelController extends Controller
     public function show(Int $id)
     {
         try{
-                $hotel=Hotel::with(['hotemAmenities','hotelRooms'])->findOrFail($id);
+                $hotel=Hotel::with(['hotemAmenities','hotelRooms','hotelDates'])->findOrFail($id);
                 return response()->json([
                     'success'=>true,
                     'status'=>200,
@@ -124,7 +124,25 @@ class HotelController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+    $hotel = Hotel::findOrFail($id);
+    $hotel->name = $request->hotel;
+    if ($request->hasFile('hotel_image')) {
+        $path = public_path('images');
+        $fileName = time() . $request->file('hotel_image')->getClientOriginalName();
+        $request->file('hotel_image')->move($path, $fileName);
+        $hotel->image_url = $fileName;
+    }
+    $hotel->save();
+    HotelAmenities::where('hotel_id', $hotel->id)->delete();
+    if($request->amenities){
+    foreach ($request->amenities as $amenitie) {
+        HotelAmenities::create([
+            'name' => $amenitie,
+            'hotel_id' => $hotel->id
+        ]);
+     }
+    }
+     return response()->json(['sccess'=>true,'status'=>200]);
     }
 
     /**
@@ -132,6 +150,20 @@ class HotelController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            HotelAmenities::whereHotelId($id)->delete();
+            Hotel::whereId($id)->delete();
+            return response()->json([
+               'success'=>true,
+               'status'=>200,
+               'message'=>'Hotel deleted successfully',
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+               'success'=>false,
+               'staus'=>404,
+               'message'=>$e->getMessage(),
+            ]);
+        }
     }
 }
